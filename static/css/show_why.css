@@ -1,0 +1,12 @@
+.show_why{
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.explanation-text{
+	padding: 0.5em;
+	margin: 0.5em;
+	border: solid 1px;
+	text-align: justify;
+}

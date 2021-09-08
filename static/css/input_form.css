@@ -1,0 +1,52 @@
+#form-container{
+	height: 100%;
+	width: 55vw;
+	margin-left: 5vw;
+}
+
+form{
+	height: 100%;
+}
+
+.input-textarea{
+	width: 100%;
+	height: 43%;
+	margin-top: 2.5em;
+	padding: 1em;
+}
+
+#example-list{
+	text-decoration: underline; 
+	color: blue;
+	list-style: none;
+}
+
+#example-list:hover{
+	cursor: pointer;
+}
+
+#submit-text{
+	width: 26%;
+	margin-left: 37%;
+}
+#ask_for_explanation{
+	width: 26%;
+	margin-left: 37%;
+}
+
+input, button{
+	padding: 10px 15px 11px !important;
+	font-size: 18px !important;
+	background-color: #99ccff;
+	font-weight: bold;
+	text-shadow: 1px 1px #99ccff;
+	color: #ffffff;
+	border-radius: 5px;
+	border: 1px solid #99ccff;
+	cursor: pointer;
+	margin-top: 1em;
+}
+
+input:hover, button:hover{
+	background-color: #66b3ff;
+}
