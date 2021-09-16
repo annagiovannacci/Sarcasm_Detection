@@ -48,3 +48,18 @@ h1{
 	margin-bottom: 10px;
 	text-align: justify;
 }
+#explanation-container{
+    display: none;
+}
+#main-text{
+    color:white
+}
+#show_ex{
+    display:none
+}
+#form-container{
+    display:none
+}
+#tweet-container{
+    display:none
+}

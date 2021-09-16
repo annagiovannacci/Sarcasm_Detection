@@ -2,7 +2,18 @@
 
 HANDLES INPUT FROM THE USER IN THE INITAL FORM
 */
+$("#long_text_analyzer").click(function(){
+	$("welcome-container").hide();
+	$("#first-choice").hide();
+	$("#form-container").show();
 
+});
+$("#tweet_analyzer").click(function(){
+	$("#welcome-container").hide();
+	$("#first-choice").hide();
+	$("#tweet-container").show();
+
+})
 
 //Submits the form with the input text given by the user
 $("#submit-text").click(function(){
@@ -23,7 +34,7 @@ $("#submit-text").click(function(){
 		//Hides the input textarea and shows the results
 		$("#form-container").hide();
 		$(".loader").hide();
-		$("#explanation-container").hide();
+		$("#show_ex").hide();
 		$("#main-container").show();
 		
 		
@@ -50,7 +61,9 @@ $("#ask_for_explanation").click(function(){
 		text: text
 	},function(data){
 		$(".loader").hide();
+		$("#welcome-container").hide();
 		$("#main-container").hide();
+		$("#show_ex").hide()
 		$("#explanation-container").show();
 		for (var i=0; i<data['tokenization'].length; i++){
 			for (var j = 0; j < data['tokenization'][i].length; j++){
@@ -76,7 +89,36 @@ $("#ask_for_explanation").click(function(){
 });
 
 
+$("#submit-tweet").click(function(){
+	$("#submit-tweet").hide();
+	$(".loader").show();
 
+	//Gets:
+	//	the test given in input by the user
+	var text = $("#user-tweet-input").val();
+	input_text = text; //Keeps the text in a global variable
+			
+	$.getJSON($SCRIPT_ROOT + '/multilingual_tweet', {
+		text: text
+	}, function(data){
+
+		//Hides the input textarea and shows the results
+		$("#tweet-container").hide();
+		$(".loader").hide();
+		$("#show_ex").hide();
+		$("#main-container").show();
+		
+		
+
+			//show the prediction
+		var span_sentence = $(document.createElement('span')).text(data['tweet_pred']);
+		$(span_sentence).addClass('sentence');
+		$("#main-text").append(span_sentence);	
+				
+	});
+
+
+});
 
 $("#example-list li").click(function(){
 

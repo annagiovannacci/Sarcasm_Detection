@@ -9,35 +9,129 @@
 	    <script type=text/javascript>
 		  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		</script>
-	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/feedback.css') }}">
 	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/input_form.css') }}">
 	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/loader.css') }}">
-	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main_text_container.css') }}">
-	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/side_text_container.css') }}">
-	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/show_why.css') }}">
-
-
+		<link rel="shortcut icon" href="/static/favicon.ico">
 	</head>
 
-	<body>
-		
-		{% include 'navigation.html' %}
-
-		{% include 'input_form_container.html' %}
-
-		<!-- Initially invisible, becomes visibel after submitting a text -->
-		<div id = "main-container">
-
-			{% include 'main_text_container.html' %}
-			{% include 'show_explanation.html' %}
-
+	<body class = 'bg-dark d-flex flex-column min-vh-100 disable-highlight'>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar" >
+			<div class="container-fluid">
+				<div class="navbar-brand mr-auto">
+					<a href="/">
+						<img src="static/Xai_logo.png" height="45px">
+					</a>
+					<a href="/sarcastic-news">
+						Sarcasm Detection tool
+					</a>
+				</div>
+	
+	
+				<div class="navbar-brand" >
+					<img src="static/Logo_polimi.png" height="35px">
+				</div>
+	
+			</div>
+	
+	
+		</nav>
+	
+		<div class="container-fluid" id="welcome-container">
+			<div class="row">
+				<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<h1>Welcome</h1>
+					<h2>Sarcasm Detection tool</h2>
+				</div>
+			</div>
 		</div>
+		<div class= 'container-fluid' id="first-choice">
+			<div class='row'>
+				<div class = 'col text-center'>
+					<button type="button" class="btn btn-primary" id = "tweet_analyzer">Multilingual tweet analysis</button>
+				</div>
+			</div>
+				<div class = 'row'>
+					<div class = 'col text-center'>
+					<button type="button" class="btn btn-primary" id = "long_text_analyzer">Fake news versus Sarcastic News</button>
+					</div>
+				</div>
+		</div>
+	
+			<div class ='container fluid' id="form-container">
+				<div class="row">
+					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<h2>Insert your text here</h2>
+					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
+					</div>
+				</div>
+				<div class ="row">
+					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+						<form id="form-text" style = 'text-align: center;'>
+							<textarea class='input-textarea' id="user-text-input" name='text'></textarea>
+							<input type='Button' id='submit-text' value="Submit">
+							<div class='loader'></div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class ='container fluid' id="tweet-container">
+				<div class="row">
+					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<h2>Insert your tweet/short text here</h2>
+					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
+					<p>Languages available are: Italian,French,Portoguese,Spanish,German</p>
+					</div>
+				</div>
+				<div class ="row">
+					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+						<form id="form-text" style = 'text-align: center;'>
+							<textarea class='input-textarea' id="user-tweet-input" name='text'></textarea>
+							<input type='Button' id='submit-tweet' value="Submit">
+							<div class='loader'></div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Initially invisible, becomes visible after submitting a text -->
+		<div class = 'container-fluid' id = "main-container">
+			<div class = "row">
+				<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<p>Input was predicted to be:</p>
+					<div class="main-text-container">
+						<p id = "main-text"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class = 'container-fluid' id="show_ex">
+			<div class ='row'>
+				<div class ='col text-center'>
+					<input type='Button' id='ask_for_explanation' value="Explanation">
+						<div class='loader'></div>
+					</div>
+					</div>
+				</div>
 		<div id = "explanation-container">
-			{% include 'text_analysis_container.html' %}
+			<div class = "container-fluid">
+				<div class = 'row'>
+					<div class = 'col text-center text-white'>
+						<p>Saliency map for this text is:</p>
+						<div class="text-container">
+							<p id = "text-pred"></p>
+						</div>
+					</div>
+				</div>	
+			</div>
 		</div>
 
+		<footer class="bg-light small px-3 py-3 mt-auto" id="footer">
+			<div class="container-fluid">
+				<div class="float-right">
+					Anna Giovannacci
+				</div>
+			</div>
 	</body>
 
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>

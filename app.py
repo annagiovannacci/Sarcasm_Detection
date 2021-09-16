@@ -65,6 +65,14 @@ def prediction_long_text():
     result = {'text_long':text, 'long_text_pred' : prediction}
     return jsonify(result)
 
+@app.route('/multilingual_tweet')
+def prediction_tweet():
+    text = request.args.get('text',0,type=str)
+    print("predicting our tweet..")
+    prediction = AFC.satire_prediction(text,'satire')
+    result = {'tweet':text,'tweet_pred':prediction}
+    return jsonify(result)
+
 
 
 

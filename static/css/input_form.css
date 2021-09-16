@@ -1,7 +1,6 @@
 #form-container{
 	height: 100%;
 	width: 55vw;
-	margin-left: 5vw;
 }
 
 form{
@@ -27,11 +26,9 @@ form{
 
 #submit-text{
 	width: 26%;
-	margin-left: 37%;
 }
 #ask_for_explanation{
 	width: 26%;
-	margin-left: 37%;
 }
 
 input, button{
