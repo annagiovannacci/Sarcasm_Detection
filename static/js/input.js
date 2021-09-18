@@ -3,7 +3,7 @@
 HANDLES INPUT FROM THE USER IN THE INITAL FORM
 */
 $("#long_text_analyzer").click(function(){
-	$("welcome-container").hide();
+	$("#welcome-container").hide();
 	$("#first-choice").hide();
 	$("#form-container").show();
 
@@ -103,8 +103,9 @@ $("#submit-tweet").click(function(){
 	}, function(data){
 
 		//Hides the input textarea and shows the results
-		$("#tweet-container").hide();
+		//$("#tweet-container").hide();
 		$(".loader").hide();
+		$("#submit-tweet").show();
 		$("#show_ex").hide();
 		$("#main-container").show();
 		
@@ -120,19 +121,3 @@ $("#submit-tweet").click(function(){
 
 });
 
-$("#example-list li").click(function(){
-
-	var filename = $(this).attr('name');
-
-	$('body').css('cursor', 'wait');			
-	$.getJSON($SCRIPT_ROOT + '/get_example', {
-		example: filename
-	}, function(data){
-
-		//Load example in the input area
-		$('#user-text-input').text(data.example);
-		$('body').css('cursor', 'default');
-
-	});
-
-});
