@@ -48,17 +48,15 @@
 		</div>
 		<div class= 'container-fluid' id="first-choice">
 			<div class='row mb-3 justify-content-center'>
-				<div class = 'col-sm-4'>
-					<button type="button" class="btn btn-primary btn-block" id = "tweet_analyzer">Multilingual tweet analysis</button>
+				<div class = '.col-6 .col-md-4'>
+					
+						<select class="form-select" aria-label="Default select example" id="choice" onChange="choose(this);">
+							<option value="1" selected>Fake/Real/Satire Article Classifier</option>
+							<option value="2">Real/Satire Tweet Classifier</option>
+						  </select>
+					</div>				
 				</div>
 			</div>
-				<div class = 'row mb-3 justify-content-center'>
-					<div class = 'col-sm-4'>
-					<button type="button" class="btn btn-primary btn-block" id = "long_text_analyzer">Fake news versus Sarcastic News</button>
-					</div>
-				</div>
-		</div>
-	
 			<div class ='container fluid' id="form-container">
 				<div class="row">
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
@@ -105,20 +103,12 @@
 				</div>
 			</div>
 		</div>
-		<div class = 'container-fluid' id="show_ex">
-			<div class ='row'>
-				<div class ='col text-center'>
-					<input type='Button' id='ask_for_explanation' value="Explanation">
-						<div class='loader'></div>
-					</div>
-					</div>
-				</div>
 		<div id = "explanation-container">
 			<div class = "container-fluid">
 				<div class = 'row'>
 					<div class = 'col text-center text-white'>
 						<p>Saliency map for this text is:</p>
-						<div class="text-container">
+						<div class="text-container text-dark">
 							<p id = "text-pred"></p>
 						</div>
 					</div>

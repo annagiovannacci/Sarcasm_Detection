@@ -61,6 +61,7 @@ def explain_prediction():
 def prediction_long_text():
     text = request.args.get('text',0,type = str)
     print("Predicting for long text...")
+    print(text)
     prediction = AFC.satire_prediction(text,'long_text')
     result = {'text_long':text, 'long_text_pred' : prediction}
     return jsonify(result)
