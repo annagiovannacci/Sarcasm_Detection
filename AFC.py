@@ -1,11 +1,13 @@
 import ktrain
 import ast
 import os
+from nltk.tree import ProbabilisticTree
 from transformers import *
 import tensorflow as tf
 import explainability as E
 import scraping
-
+import re
+import html
 
 
 #Change "1" with "0,1" or "0" depending on which GPU you want to use
@@ -17,7 +19,11 @@ BASE_DIR_WEIGHTS = ''
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//sarcasm',from_tf = True)
 
-
+def preprocess_text(sentence):
+    sentence = sentence.replace('\n','' ) #cleaning newline “\n” from the tweets
+    sentence = re.sub(r'(@[A-Za-z_]+)|[^\w\s]|#|http\S+', '', sentence)
+    sentence = html.unescape(sentence)
+    return sentence
 
 
 #check the explainability of the prediction of a sentence
@@ -37,12 +43,14 @@ def satire_prediction_explainability(sentence):
 
   return token_importance_norm,token_words
 def satire_prediction(sentence, scope):
+  sentence = preprocess_text(sentence)
   if scope == 'long_text':
     predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/long-text-predictor-second-format')
   elif scope == 'satire':
     predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/Model-for-pred')
   y = predictor.predict(sentence)
-  return y 
+  probabilities = predictor.predict_proba(sentence)
+  return y, probabilities
 def long_text_prediction(text):
   predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'long-text-predictor-second-format')
   

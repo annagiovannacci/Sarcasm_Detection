@@ -3,15 +3,24 @@
 HANDLES INPUT FROM THE USER IN THE INITAL FORM
 */
 
+
+
+
+
 function choose(sel) {
 	$("#main-container").hide()
 	$("#explanation-container").hide()
 	$("#main-text").replaceWith("<p id = "+"main-text"+"></p>")
-	$("#text-pred").replaceWith("<p id = "+"text-pred"+"></p>")
+	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
+	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
+	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+
+
 
 	if (sel.options[sel.selectedIndex].value ==1){
 		$("#welcome-container").hide();
 		$("#tweet-container").hide();
+		$("#form-text-short").hide();
 		$("#form-container").show();
 
 	}
@@ -19,6 +28,11 @@ function choose(sel) {
 		$("#welcome-container").hide();
 		$("#form-container").hide();
 		$("#tweet-container").show();
+		$("#form-text-short").show();
+
+		
+
+		
 	}		
 
 
@@ -35,15 +49,18 @@ $("#submit-text").click(function(){
 	$("#main-container").hide();
 
 	$("#main-text").replaceWith("<p id = "+"main-text"+"></p>")
-	$("#text-pred").replaceWith("<p id = "+"text-pred"+"></p>")
-
+	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
 
 	//Gets:
 	//	the test given in input by the user
-	var text = $("#user-text-input").val();
-	input_text = text; //Keeps the text in a global variable
+	 //Keeps the text in a global variable
 	
+	var text = $("#user-text-editable").text();
+	console.log(text)
+	input_text = text;	
+	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 
+	
 	$.getJSON($SCRIPT_ROOT + '/prediction_long_text', {
 		text: text
 	}, function(data1){
@@ -56,71 +73,169 @@ $("#submit-text").click(function(){
 			text: text
 		},function(data){
 			$(".loader").hide();
-			//document.getElementById("user-text-input").value= ""
-			$(".loader").hide();
-			$("#form-container").show();		
-			$("#user-text-input").show();
+			$("#form-text-short").show();		
 			$("#main-container").show();
 		
 		//show the prediction
 			var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
 			$(span_sentence).addClass('sentence');
+			var confidence_sentence = $(document.createElement('span')).text((data1['confidence'].toString()))
+			$(confidence_sentence).addClass('sentence');
+			console.log(data1['confidence'])
 			$("#main-text").append(span_sentence);
-			$("#user-text-input").append(text)
-			$("#explanation-container").show();
-			$("#text-pred").val("")
+			$("#confidence").append(confidence_sentence)
+			$("#confidence").append($(document.createElement('span')).text("% "))
+			start_word = 0
+			a = 0
+			text = text.replace(/ /g, "")
+			text_1 = new Array()
+			var dict = {}
+			for (var u = 0; u < text.length; u++){
+				if (text[u].match(/[^\w\s]/))
+				dict[u] = text[u]
+			}
+			text = text.replace(/[^\w\s]/g,"")
+			console.log(dict)
 			for (var i=0; i<data['tokenization'].length; i++){
 				for (var j = 0; j < data['tokenization'][i].length; j++){
-				var span_element = $(document.createElement('span')).text(data['tokenization'][i][j]+" ");
+				str = data['tokenization'][i][j].replace(/#/g,'')
+				str = str.replace(/ /g, '')
+				end_word = start_word + str.length;
+				
+				for (k=start_word; k<end_word; k++){
+					text_1.push(text[k])
+					for (var key in dict){
+						if (k+1+a == key){
+							text_1.splice(key,0,dict[key])
+							a = a + 1
+						}
+					}
+					
+				}
+				start_word = end_word
+				
+				var sentence = $(document.createElement('span')).text(text_1.join('')+" ");
+				while(text_1.length > 0){
+					text_1.pop()
+				}
 				//console.log(data['tokenization'][i][j])
-				$(span_element).addClass('sentence');
+				$(sentence).addClass('sentence');
 				if (data['prediction'][i]=='NOT_SATIRE'){
-					$(span_element).css('background-color', compute_background_only_green(data['explanation'][i][0][j]*100))
+					$(sentence).css('background-color', compute_background_only_green(data['explanation'][i][0][j]*100))
 					
 				}
 				if (data['prediction'][i]=='SATIRE'){				
-					$(span_element).css('background-color', compute_background_only_red(data['explanation'][i][0][j]*100))
+					$(sentence).css('background-color', compute_background_only_red(data['explanation'][i][0][j]*100))
 				}
-				//document.getElementById("user-text-input").value= document.getElementById("user-text-input").value + $(span_element).text()
-				$("#text-pred").append(span_element);	
-				$("#text-pred").append($(document.createElement('span')).text(" "))
-				//$("#user-text-input").append($(document.createElement('span')).text(" "))
+				console.log(sentence)
+				$("#user-text-editable").append(sentence);	
+				$("#user-text-editable").append($(document.createElement('span')).text(" "))
+			
 				}
 			}
+			$("#explanation-container").show()
 
 		});
 	});
+	
 });
 
 $("#submit-tweet").click(function(){
 	$("#submit-tweet").hide();
+	$("#explanation-container").hide();
+	$("#main-container").hide();
 	$(".loader").show();
 
 	//Gets:
 	//	the test given in input by the user
+
 	
-	var text = $("#user-tweet-input").val();
+	$("#main-text").replaceWith("<p id = "+"main-text"+"></p>")
+	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
+	
+	var text = $("#user-tweet-input").text();
+	console.log(text)
 	input_text = text; //Keeps the text in a global variable
-			
+	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+	console.log(text)
 	$.getJSON($SCRIPT_ROOT + '/multilingual_tweet', {
 		text: text
 	}, function(data){
 
+		$.getJSON($SCRIPT_ROOT+'/explain_prediction_single_tweet',{
+			text: text
+		},function(data1){
 		//Hides the input textarea and shows the results
 		//$("#tweet-container").hide();
 		$(".loader").hide();
 		$("#submit-tweet").show();
 		$("#main-container").show();
-		
-		
 
-			//show the prediction
+		//show the prediction
 		var span_sentence = $(document.createElement('span')).text(data['tweet_pred']);
 		$(span_sentence).addClass('sentence');
 		$("#main-text").append(span_sentence);	
+		var confidence_sentence = $(document.createElement('span')).text((data['confidence'].toString()))
+		$(confidence_sentence).addClass('sentence');
+		console.log(data['confidence'])
+		$("#main-text").append(span_sentence);
+		$("#confidence").append(confidence_sentence)
+		$("#confidence").append($(document.createElement('span')).text("% "))
+
+		start_word = 0
+		a = 0
+		text = text.replace(/ /g, "")
+		text_1 = new Array()
+		var dict = {}
+		for (var u = 0; u < text.length; u++){
+			if (text[u].match(/[^\w\s]/))
+				dict[u] = text[u]
+			}
+		text = text.replace(/[^\w\s]/g,"")
+		for (var i=0; i<data1['tokenization'].length; i++){
+			str = data1['tokenization'][i].replace(/#/g,'')
+			str = str.replace(/ /g, '')
+			end_word = start_word + str.length;
+			
+			for (k=start_word; k<end_word; k++){
+				text_1.push(text[k])
+				for (var key in dict){
+					if (k+1+a == key){
+						text_1.splice(key,0,dict[key])
+						a = a + 1
+					}
+				}	
+			}
+			start_word = end_word
+			console.log(text_1)
+			var sentence = $(document.createElement('span')).text(text_1.join('')+" ");
+			while(text_1.length > 0){
+				text_1.pop()
+			}
+			console.log(data1['tokenization'][i])
+			console.log(data1['prediction'])
+			$(sentence).addClass('sentence');
+			if (data1['prediction']=='NOT_SATIRE'){
+				console.log(data1['explanation'][0][i])
+				$(sentence).css('background-color', compute_background_only_green(data1['explanation'][0][i]*100))
+				
+			}
+			if (data1['prediction']=='SATIRE'){				
+				$(sentence).css('background-color', compute_background_only_red(data1['explanation'][0][i]*100))
+			}
+			console.log(sentence)
+			$("#user-tweet-input").append(sentence);	
+			$("#user-tweet-input").append($(document.createElement('span')).text(" "))
+		
+			}
+		
+
+		$("#explanation-container").show()
+		$("#lgexp").hide()
+		
 				
 	});
 
 
 });
-
+});

@@ -57,3 +57,15 @@ h1{
 #tweet-container{
     display:none
 }
+#user-text-editable,#user-tweet-input{
+    background-color: white;
+    color: black;
+    width: 500px;
+	height: 200px;
+    float: left;	
+}
+
+#submit-text{
+	width: 60%;
+    float: right;
+}

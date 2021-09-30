@@ -13,6 +13,7 @@ nltk.download('punkt')
 
 
 
+
 app = Flask(__name__, static_url_path='/static')
 #run_with_ngrok(app)
 
@@ -40,18 +41,18 @@ def explain_prediction():
     for sentence in sentences:
         print("prediction for text:", sentence)
         print("Explaining prediction for text: ", sentence)
-        sentence = sentence.replace('\n','' ) #cleaning newline “\n” from the tweets
-        sentence = re.sub(r'(@[A-Za-z_]+)|[^\w\s]|#|http\S+', '', sentence)
-        sentence = html.unescape(sentence)
+        sentence = AFC.preprocess_text(sentence)
         token_importance_norm_1, token_words_1 = AFC.satire_prediction_explainability(sentence)
         max_exp = np.max(token_importance_norm_1)
         min_exp = np.min(token_importance_norm_1)
-        s = (token_importance_norm_1-min_exp) / (max_exp - min_exp)
+        s = (token_importance_norm_1-min_exp) / (max_exp - min_exp+0.01)
         new_x = s.tolist() 
         token_importance_norm.append(token_importance_norm_1)
         token_words.append(token_words_1)
         explanation.append(new_x)
-        prediction.append(AFC.satire_prediction(sentence,'satire'))
+        print(sentence)
+        prediction_, probabilities = AFC.satire_prediction(sentence, 'satire')
+        prediction.append(prediction_)
     print(token_words)
     print(explanation)
     result = {'text':text,'tokenization':token_words,'explanation':explanation,'prediction': prediction}
@@ -62,19 +63,47 @@ def prediction_long_text():
     text = request.args.get('text',0,type = str)
     print("Predicting for long text...")
     print(text)
-    prediction = AFC.satire_prediction(text,'long_text')
-    result = {'text_long':text, 'long_text_pred' : prediction}
+    text = AFC.preprocess_text(text)
+    prediction,probabilities = AFC.satire_prediction(text,'long_text')
+    if (prediction == 'FAKE'):
+        probability = probabilities[0]
+    if (prediction == 'REAL'):
+        probability = probabilities[1]
+    if (prediction == 'SATIRICAL'):
+        probability = probabilities[2]
+    probability = probability*100
+    result = {'text_long':text, 'long_text_pred' : prediction, 'confidence': int(probability)}
     return jsonify(result)
 
 @app.route('/multilingual_tweet')
 def prediction_tweet():
     text = request.args.get('text',0,type=str)
-    print("predicting our tweet..")
-    prediction = AFC.satire_prediction(text,'satire')
-    result = {'tweet':text,'tweet_pred':prediction}
+    text = AFC.preprocess_text(text)
+    prediction, probabilities = AFC.satire_prediction(text,'satire')
+    if (prediction == 'SATIRE'):
+        probability = probabilities[1]
+    elif (prediction == 'NOT_SATIRE'):
+        probability = probabilities[0]
+    probability = probability * 100
+    result = {'tweet':text,'tweet_pred':prediction,'confidence':int(probability)}
     return jsonify(result)
-
-
+@app.route("/explain_prediction_single_tweet")
+def explaination_prediction_single_tweet():
+    tweet           = request.args.get('text', 0, type=str)
+    print("prediction for text:", tweet)
+    print("Explaining prediction for text: ", tweet)
+    tweet = tweet.replace('\n','' ) #cleaning newline “\n” from the tweets
+    sentence = re.sub(r'(@[A-Za-z_]+)|[^\w\s]|#|http\S+', '', tweet)
+    sentence = html.unescape(sentence)
+    token_importance_norm_, token_words_ = AFC.satire_prediction_explainability(sentence)
+    max_exp = np.max(token_importance_norm_)
+    min_exp = np.min(token_importance_norm_)
+    s = (token_importance_norm_-min_exp) / (max_exp - min_exp+0.01)
+    new_x = s.tolist() 
+    print(sentence)
+    prediction_, probabilities = AFC.satire_prediction(sentence, 'satire')
+    result = {'text':tweet,'tokenization':token_words_,'explanation':new_x,'prediction': prediction_}
+    return jsonify(result)
 
 
 """

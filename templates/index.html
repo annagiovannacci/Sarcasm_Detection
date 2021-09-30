@@ -64,16 +64,23 @@
 					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
 					</div>
 				</div>
-				<div class ="row">
-					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
-						<form id="form-text" style = 'text-align: center;'>
-							<textarea class='input-textarea' id="user-text-input" name='text'></textarea>
-							<input type='Button' id='submit-text' value="Submit">
-							<div class='loader'></div>
-						</form>
+				<div class ="row justify-content-center">
+					<div class="col col-lg-4 text-white">
+						<form id="form-text">
+							<div id="user-text-editable" contenteditable="True"></div>
+							<textarea id="user-text-input" style="display:none"></textarea>
+						</div>
+					<div class="col col-md-4 text-white">
+						<input type='Button' id='submit-text' value="Submit">
 					</div>
+					<div class="col col-md-4">
+						<div class='loader'></div>
+					</div>
+				</form>
 				</div>
-			</div>
+						
+					
+				</div>
 			<div class ='container fluid' id="tweet-container">
 				<div class="row">
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
@@ -82,39 +89,52 @@
 					<p>Languages available are: English,Italian,French,Portoguese,Spanish,German</p>
 					</div>
 				</div>
-				<div class ="row">
-					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
-						<form id="form-text" style = 'text-align: center;'>
-							<textarea class='input-textarea' id="user-tweet-input" name='text'></textarea>
-							<input type='Button' id='submit-tweet' value="Submit">
-							<div class='loader'></div>
-						</form>
+				<div class ="row justify-content-center">
+					<div class="col col-lg-4 text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+						<form id="form-text-short" style = 'text-align: center;'>
+							<div id="user-tweet-input" contenteditable="True"></div>
 					</div>
+					<div class="col col-md-4 text-white">
+							<input type='Button' id='submit-tweet' value="Submit">
+					</div>
+					<div class="col col-md-4">
+					<div class='loader'></div>
+					</div>
+						</form>
+					
 				</div>
 			</div>
 			<!-- Initially invisible, becomes visible after submitting a text -->
-		<div class = 'container-fluid' id = "main-container">
-			<div class = "row">
-				<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+			<div class = "row justify-content-center">
+				<div class="col col-lg-6 text-white order-2" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<div class = 'container-fluid' id = "main-container">
 					<p>Input was predicted to be:</p>
 					<div class="main-text-container">
 						<p id = "main-text"></p>
+						<p>With confidence:</p>
+						<p id ="confidence"></p>
+					</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div id = "explanation-container">
-			<div class = "container-fluid">
-				<div class = 'row'>
-					<div class = 'col text-center text-white'>
-						<p>Saliency map for this text is:</p>
-						<div class="text-container text-dark">
-							<p id = "text-pred"></p>
+				<div class="col col-lg-6 text-white order-1" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<div id = "explanation-container">
+						<div class = "container-fluid">
+								<div class = 'col text-center text-white'>
+									<p>Saliency map can be read as follows: darker words are the most important for our prediction</p>
+									<p id="lgexp">Each sentence is considered per-se , in order to see how much of sarcastic/satirical sentences can be detected even
+									in real/fake articles
+									</p>
+									<p>Green means that the sentence was classified as not satirical, red means satirical</p>
+									<div class="text-container text-dark">
+										<p id = "text-pred"></p>
+									</div>
+								</div>
+							</div>	
 						</div>
-					</div>
-				</div>	
+				</div>
 			</div>
-		</div>
+		
+		
 
 		<footer class="bg-light small px-3 py-3 mt-auto" id="footer">
 			<div class="container-fluid">

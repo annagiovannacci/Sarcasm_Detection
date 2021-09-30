@@ -1,6 +1,6 @@
 #form-container{
 	height: 100%;
-	width: 55vw;
+	width: 70%;
 }
 
 form{
@@ -23,14 +23,6 @@ form{
 #example-list:hover{
 	cursor: pointer;
 }
-
-#submit-text{
-	width: 26%;
-}
-#ask_for_explanation{
-	width: 26%;
-}
-
 input{
 	padding: 10px 15px 11px !important;
 	font-size: 18px !important;
@@ -42,8 +34,4 @@ input{
 	border: 1px solid #99ccff;
 	cursor: pointer;
 	margin-top: 1em;
-}
-
-input:hover, button:hover{
-	background-color: #66b3ff;
 }
