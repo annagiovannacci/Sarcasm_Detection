@@ -62,13 +62,19 @@
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 					<h2>Insert your text here</h2>
 					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
-					</div>
+					<p>Or load one of our examples:
+					<ul id="examples">
+						<li name="real_one.txt">REAL article</li>
+						<li name ="fake_one.txt">FAKE article</li>
+						<li name ="sarcastic_one.txt">SATIRICAL article</li>
+					  </ul>
+					</p>
+				</div>
 				</div>
 				<div class ="row justify-content-center">
 					<div class="col col-lg-4 text-white">
 						<form id="form-text">
 							<div id="user-text-editable" contenteditable="True"></div>
-							<textarea id="user-text-input" style="display:none"></textarea>
 						</div>
 					<div class="col col-md-4 text-white">
 						<input type='Button' id='submit-text' value="Submit">
@@ -120,11 +126,10 @@
 					<div id = "explanation-container">
 						<div class = "container-fluid">
 								<div class = 'col text-center text-white'>
-									<p>Saliency map can be read as follows: darker words are the most important for our prediction</p>
-									<p id="lgexp">Each sentence is considered per-se , in order to see how much of sarcastic/satirical sentences can be detected even
-									in real/fake articles
+									<p>Saliency map can be read as follows: darker words are the most important for the prediction</p>
+									<p id="lgexp">Green means that the text was classified as REAL, red means SATIRICAL,blue means FAKE
 									</p>
-									<p>Green means that the sentence was classified as not satirical, red means satirical</p>
+									<p id = "tweetexp">Green means that the tweet was classified as NOT-SATIRICAL, red means SATIRICAL</p>
 									<div class="text-container text-dark">
 										<p id = "text-pred"></p>
 									</div>

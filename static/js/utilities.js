@@ -38,3 +38,8 @@ function compute_background_only_red(value){
 	css_value = "rgb(255,"+not_red+","+not_red+")"
 	return css_value
 }
+function compute_background_only_blue(value){
+	not_blue = 255-value*2.55;
+	css_value="rgb("+not_blue+","+not_blue+",255)"
+	return css_value
+}

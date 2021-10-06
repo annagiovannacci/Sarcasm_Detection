@@ -60,9 +60,13 @@ h1{
 #user-text-editable,#user-tweet-input{
     background-color: white;
     color: black;
-    width: 500px;
-	height: 200px;
-    float: left;	
+    border: 1px solid gray;
+    min-height: 50px;  /* if you want Flexible textarea/div then give min-height instead of height */
+    overflow: auto; 
+    padding: 2px;
+    resize: both;
+    width: 400px;
+    font-size:15px;
 }
 
 #submit-text{

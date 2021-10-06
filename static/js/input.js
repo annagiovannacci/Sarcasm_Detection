@@ -1,12 +1,3 @@
-/*
-
-HANDLES INPUT FROM THE USER IN THE INITAL FORM
-*/
-
-
-
-
-
 function choose(sel) {
 	$("#main-container").hide()
 	$("#explanation-container").hide()
@@ -65,10 +56,6 @@ $("#submit-text").click(function(){
 		text: text
 	}, function(data1){
 
-		//Hides the input textarea and shows the results
-		
-	
-
 		$.getJSON($SCRIPT_ROOT+'/explain_prediction',{
 			text: text
 		},function(data){
@@ -76,68 +63,74 @@ $("#submit-text").click(function(){
 			$("#form-text-short").show();		
 			$("#main-container").show();
 		
-		//show the prediction
-			var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
-			$(span_sentence).addClass('sentence');
-			var confidence_sentence = $(document.createElement('span')).text((data1['confidence'].toString()))
-			$(confidence_sentence).addClass('sentence');
-			console.log(data1['confidence'])
-			$("#main-text").append(span_sentence);
-			$("#confidence").append(confidence_sentence)
-			$("#confidence").append($(document.createElement('span')).text("% "))
-			start_word = 0
-			a = 0
-			text = text.replace(/ /g, "")
-			text_1 = new Array()
-			var dict = {}
-			for (var u = 0; u < text.length; u++){
-				if (text[u].match(/[^\w\s]/))
+		//show the prediction & the confindence
+		var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
+		$(span_sentence).addClass('sentence');
+		$("#main-text").append(span_sentence);	
+		var confidence_sentence = $(document.createElement('span')).text((data1['confidence'].toString()))
+		$(confidence_sentence).addClass('sentence');
+		console.log(data['confidence'])
+		$("#confidence").append(confidence_sentence)
+		$("#confidence").append($(document.createElement('span')).text("% "))
+		
+		//show the explanation
+		
+		start_word = 0
+		a = 0
+		text = text.replace(/ /g, "")
+		text_1 = new Array()
+		var dict = {}
+		for (var u = 0; u < text.length; u++){
+			if (text[u].match(/[^\w\s]/))
 				dict[u] = text[u]
 			}
-			text = text.replace(/[^\w\s]/g,"")
-			console.log(dict)
-			for (var i=0; i<data['tokenization'].length; i++){
-				for (var j = 0; j < data['tokenization'][i].length; j++){
-				str = data['tokenization'][i][j].replace(/#/g,'')
-				str = str.replace(/ /g, '')
-				end_word = start_word + str.length;
-				
-				for (k=start_word; k<end_word; k++){
-					text_1.push(text[k])
-					for (var key in dict){
-						if (k+1+a == key){
-							text_1.splice(key,0,dict[key])
-							a = a + 1
-						}
-					}
-					
-				}
-				start_word = end_word
-				
-				var sentence = $(document.createElement('span')).text(text_1.join('')+" ");
-				while(text_1.length > 0){
-					text_1.pop()
-				}
-				//console.log(data['tokenization'][i][j])
-				$(sentence).addClass('sentence');
-				if (data['prediction'][i]=='NOT_SATIRE'){
-					$(sentence).css('background-color', compute_background_only_green(data['explanation'][i][0][j]*100))
-					
-				}
-				if (data['prediction'][i]=='SATIRE'){				
-					$(sentence).css('background-color', compute_background_only_red(data['explanation'][i][0][j]*100))
-				}
-				console.log(sentence)
-				$("#user-text-editable").append(sentence);	
-				$("#user-text-editable").append($(document.createElement('span')).text(" "))
+		text = text.replace(/[^\w\s]/g,"")
+		for (var i=0; i<data['tokenization'].length; i++){
+			str = data['tokenization'][i].replace(/#/g,'')
+			str = str.replace(/ /g, '')
+			end_word = start_word + str.length;
 			
-				}
+			for (k=start_word; k<end_word; k++){
+				text_1.push(text[k])
+				for (var key in dict){
+					if (k+1+a == key){
+						text_1.splice(key,0,dict[key])
+						a = a + 1
+					}
+				}	
 			}
-			$("#explanation-container").show()
+			start_word = end_word
+			console.log(text_1)
+			var sentence = $(document.createElement('span')).text(text_1.join('')+" ");
+			while(text_1.length > 0){
+				text_1.pop()
+			}
+			console.log(data['tokenization'][i])
+			console.log(data['prediction'])
+			$(sentence).addClass('sentence');
+			if (data1['long_text_pred']=='REAL'){
+				$(sentence).css('background-color', compute_background_only_green(data['explanation'][0][i]*100))
+				
+			}
+			if (data1['long_text_pred']=='FAKE'){			
+				console.log(data['explanation'][0][i]*100)	
+				console.log(compute_background_only_blue(data['explanation'][0][i]*100))
+				$(sentence).css('background-color', compute_background_only_blue(data['explanation'][0][i]*100))
+			}
+			if (data1['long_text_pred']=='SATIRICAL'){
+				$(sentence).css('background-color', compute_background_only_red(data['explanation'][0][i]*100))
+			}
+			console.log(sentence)
 
-		});
+		$("#user-text-editable").append(sentence);	
+		$("#user-text-editable").append($(document.createElement('span')).text(" "))
+		};
+		$("#explanation-container").show()
+		$("#tweetexp").hide()
+		$("#lgexp").show()
 	});
 	
+});
 });
 
 $("#submit-tweet").click(function(){
@@ -194,7 +187,7 @@ $("#submit-tweet").click(function(){
 		text = text.replace(/[^\w\s]/g,"")
 		for (var i=0; i<data1['tokenization'].length; i++){
 			str = data1['tokenization'][i].replace(/#/g,'')
-			str = str.replace(/ /g, '')
+			str = str.replace(/ /, '')
 			end_word = start_word + str.length;
 			
 			for (k=start_word; k<end_word; k++){
@@ -208,7 +201,7 @@ $("#submit-tweet").click(function(){
 			}
 			start_word = end_word
 			console.log(text_1)
-			var sentence = $(document.createElement('span')).text(text_1.join('')+" ");
+			var sentence = $(document.createElement('span')).text(text_1.join('')+"");
 			while(text_1.length > 0){
 				text_1.pop()
 			}
@@ -232,10 +225,28 @@ $("#submit-tweet").click(function(){
 
 		$("#explanation-container").show()
 		$("#lgexp").hide()
-		
+		$("#tweetexp").show()
 				
 	});
 
 
 });
 });
+$("#examples li").click(function(){
+	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+	var filename = $(this).attr('name');
+	console.log(filename)
+	$('body').css('cursor', 'wait');			
+	$.getJSON($SCRIPT_ROOT + '/get_example', {
+		example: filename
+	}, function(data){
+
+		//Load example in the input area
+		document.getElementById('user-text-editable').innerHTML += data['example'];
+
+		$('body').css('cursor', 'default');
+
+	});
+
+});
+

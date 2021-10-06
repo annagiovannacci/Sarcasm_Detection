@@ -26,8 +26,8 @@ Returns the home page
 def main():
     return render_template('index.html',  analysis_requested = 0)
 
-@app.route('/explain_prediction')
-def explain_prediction():
+@app.route('/explain_prediction_sentence_by_sentence')
+def explain_prediction_single():
 
     #Retrieve arguments sent by the client
     #predictor_name = request.args.get('predictor_name', 0, type=str)
@@ -104,7 +104,29 @@ def explaination_prediction_single_tweet():
     prediction_, probabilities = AFC.satire_prediction(sentence, 'satire')
     result = {'text':tweet,'tokenization':token_words_,'explanation':new_x,'prediction': prediction_}
     return jsonify(result)
+@app.route('/explain_prediction')
+def explain_prediction():
+    long_text           = request.args.get('text', 0, type=str)
+    print("prediction for text:", long_text)
+    print("Explaining prediction for text: ", long_text)
+    text = AFC.preprocess_text(long_text)
+    token_importance_norm_, token_words_ = AFC.long_text_prediction_explainability(text)
+    max_exp = np.max(token_importance_norm_)
+    min_exp = np.min(token_importance_norm_)
+    s = (token_importance_norm_-min_exp) / (max_exp - min_exp+0.01)
+    new_x = s.tolist() 
+    print(text)
+    prediction_, probabilities = AFC.satire_prediction(text, 'long_text')
+    result = {'text':long_text,'tokenization':token_words_,'explanation':new_x,'prediction': prediction_}
+    return jsonify(result)
 
+@app.route("/get_example")
+def get_ex():
+    example           = request.args.get('example', 0, type=str)
+    print(example)
+    with open('examples/' + example, 'r') as f:
+        text = f.read()
+    return jsonify({'example': text})
 
 """
 
