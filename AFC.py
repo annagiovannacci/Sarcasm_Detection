@@ -14,7 +14,7 @@ import html
 #os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 MODEL_NAME = 'bert-base-multilingual-uncased'
-BASE_DIR_WEIGHTS = '//mnt//c//users//annag//Desktop//SarcasmDetection//'
+BASE_DIR_WEIGHTS = ''
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//sarcasm',from_tf = True)
