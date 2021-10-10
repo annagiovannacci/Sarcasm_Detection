@@ -1,7 +1,6 @@
 .loader {
 	display: none;
 	margin: auto;
-   	margin-top: 1em;
 	border: 12px solid #f3f3f3; /* Light grey */
 	border-top: 12px solid #3498db; /* Blue */
 	border-radius: 50%;

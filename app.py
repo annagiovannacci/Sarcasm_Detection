@@ -5,6 +5,7 @@ import csv
 import explainability as E
 import AFC
 import numpy as np
+import pandas as pd
 import scraping
 import nltk
 import re
@@ -113,6 +114,7 @@ def explain_prediction():
     token_importance_norm_, token_words_ = AFC.long_text_prediction_explainability(text)
     max_exp = np.max(token_importance_norm_)
     min_exp = np.min(token_importance_norm_)
+    print(max_exp)
     s = (token_importance_norm_-min_exp) / (max_exp - min_exp+0.01)
     new_x = s.tolist() 
     print(text)
@@ -122,11 +124,20 @@ def explain_prediction():
 
 @app.route("/get_example")
 def get_ex():
-    example           = request.args.get('example', 0, type=str)
-    print(example)
-    with open('examples/' + example, 'r') as f:
-        text = f.read()
+    label = request.args.get('label',0,type=str)
+    d = pd.read_csv('/mnt/c/Users/annag/Desktop/Sarcasm_Detection/examples/satirical_dat.csv')
+    text = str(d[d['label']==label].sample(n=1)['text'].values)
     return jsonify({'example': text})
+@app.route("/get_worst_predictions")
+def get_wp():
+    d = pd.read_csv('/mnt/c/Users/annag/Desktop/Sarcasm_Detection/examples/worst_predictions_09.csv')
+    text = str(d.sample(n=1)['Text'].values)
+    text = text.replace("['")
+    text = text.replace("']")
+    return jsonify({'example': text})
+
+
+
 
 """
 

@@ -8,7 +8,7 @@ import explainability as E
 import scraping
 import re
 import html
-
+import torch
 
 #Change "1" with "0,1" or "0" depending on which GPU you want to use
 #os.environ["CUDA_VISIBLE_DEVICES"]="1"
@@ -55,15 +55,21 @@ def satire_prediction(sentence, scope):
 def long_text_prediction_explainability(text):
   input_ids = tf.constant(tokenizer.encode(text,return_tensors='pt',add_special_tokens=False))
   input_embeds, token_ids_tensor_one_hot = E.get_embeddings(input_ids,model_2)
+  token_ids = list(input_ids.numpy()[0])
+  if (input_embeds.size()[1]>512):
+    print("--HERE")
+    print(input_ids)
+    input_ids = input_ids[0][0:512]
+    print(input_ids)
+    data = input_embeds.data[:,0:512,:]
+    input_embeds = torch.FloatTensor(data)
+    input_embeds = input_embeds.clone().requires_grad_(True)
+    print(input_embeds.size())
   output = model_2(inputs_embeds = input_embeds)
   predict = output.pooler_output
   token_importance_norm = E.gradient_x_inputs_attribution(predict,input_embeds).cpu().detach().numpy()
-
-
-  token_ids = list(input_ids.numpy()[0])
-
   token_words = tokenizer.convert_ids_to_tokens(token_ids) 
-  token_types = list(input_ids.numpy()[0])
+  #token_types = list(input_ids.numpy()[0])
   print(token_words)  
   return token_importance_norm,token_words
 

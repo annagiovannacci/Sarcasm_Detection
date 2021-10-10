@@ -85,6 +85,7 @@ $("#submit-text").click(function(){
 				dict[u] = text[u]
 			}
 		text = text.replace(/[^\w\s]/g,"")
+
 		for (var i=0; i<data['tokenization'].length; i++){
 			str = data['tokenization'][i].replace(/#/g,'')
 			str = str.replace(/ /g, '')
@@ -115,10 +116,10 @@ $("#submit-text").click(function(){
 			if (data1['long_text_pred']=='FAKE'){			
 				console.log(data['explanation'][0][i]*100)	
 				console.log(compute_background_only_blue(data['explanation'][0][i]*100))
-				$(sentence).css('background-color', compute_background_only_blue(data['explanation'][0][i]*100))
+				$(sentence).css('background-color', compute_background_only_red(data['explanation'][0][i]*100))
 			}
 			if (data1['long_text_pred']=='SATIRICAL'){
-				$(sentence).css('background-color', compute_background_only_red(data['explanation'][0][i]*100))
+				$(sentence).css('background-color', compute_background_only_blue(data['explanation'][0][i]*100))
 			}
 			console.log(sentence)
 
@@ -232,13 +233,11 @@ $("#submit-tweet").click(function(){
 
 });
 });
-$("#examples li").click(function(){
-	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
-	var filename = $(this).attr('name');
-	console.log(filename)
+$("#fake_one").click(function(){
+	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 	$('body').css('cursor', 'wait');			
 	$.getJSON($SCRIPT_ROOT + '/get_example', {
-		example: filename
+		label: 'FAKE'
 	}, function(data){
 
 		//Load example in the input area
@@ -250,3 +249,47 @@ $("#examples li").click(function(){
 
 });
 
+$("#real_one").click(function(){
+	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
+	$('body').css('cursor', 'wait');			
+	$.getJSON($SCRIPT_ROOT + '/get_example', {
+		label: 'REAL'
+	}, function(data){
+
+		//Load example in the input area
+		document.getElementById('user-text-editable').innerHTML += data['example'];
+
+		$('body').css('cursor', 'default');
+
+	});
+
+});
+$("#satirical_one").click(function(){
+	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
+	$('body').css('cursor', 'wait');			
+	$.getJSON($SCRIPT_ROOT + '/get_example', {
+		label:'SATIRICAL'
+	}, function(data){
+
+		//Load example in the input area
+		document.getElementById('user-text-editable').innerHTML += data['example'];
+
+		$('body').css('cursor', 'default');
+
+	});
+
+});
+$("#terrible_one").click(function(){
+	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
+	$('body').css('cursor', 'wait');			
+	$.getJSON($SCRIPT_ROOT + '/get_worst_predictions', {
+	}, function(data){
+
+		//Load example in the input area
+		document.getElementById('user-text-editable').innerHTML += data['example'];
+
+		$('body').css('cursor', 'default');
+
+	});
+
+});
