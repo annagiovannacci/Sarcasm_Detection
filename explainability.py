@@ -3,12 +3,14 @@ import torch
 import tensorflow as tf
 
 def get_embeddings(input_ids,model):
+  
   embedding_matrix = model.embeddings.word_embeddings
-
   vocab_size = embedding_matrix.num_embeddings
   one_hot_tensor = _one_hot(input_ids, vocab_size)
   one_hot_tensor = torch.from_numpy(one_hot_tensor)
+  
   print("---")
+  
   token_ids_tensor_one_hot = one_hot_tensor.clone().requires_grad_(True)
   # token_ids_tensor_one_hot.requires_grad_(True)
 

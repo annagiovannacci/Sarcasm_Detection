@@ -1,3 +1,4 @@
+var radio_choice = 0
 function choose(sel) {
 	$("#main-container").hide()
 	$("#explanation-container").hide()
@@ -5,7 +6,7 @@ function choose(sel) {
 	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
 	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
-
+	$("#doc-container").hide()
 
 
 	if (sel.options[sel.selectedIndex].value ==1){
@@ -17,6 +18,7 @@ function choose(sel) {
 	}
 	else if (sel.options[sel.selectedIndex].value==2){
 		$("#welcome-container").hide();
+		$("#multilingual-choice").show();
 		$("#form-container").hide();
 		$("#tweet-container").show();
 		$("#form-text-short").show();
@@ -50,7 +52,7 @@ $("#submit-text").click(function(){
 	console.log(text)
 	input_text = text;	
 	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
-
+	hash=false
 	
 	$.getJSON($SCRIPT_ROOT + '/prediction_long_text', {
 		text: text
@@ -63,13 +65,12 @@ $("#submit-text").click(function(){
 			$("#form-text-short").show();		
 			$("#main-container").show();
 		
-		//show the prediction & the confindence
+		//show the prediction & the confidence
 		var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
 		$(span_sentence).addClass('sentence');
 		$("#main-text").append(span_sentence);	
 		var confidence_sentence = $(document.createElement('span')).text((data1['confidence'].toString()))
 		$(confidence_sentence).addClass('sentence');
-		console.log(data['confidence'])
 		$("#confidence").append(confidence_sentence)
 		$("#confidence").append($(document.createElement('span')).text("% "))
 		
@@ -78,6 +79,7 @@ $("#submit-text").click(function(){
 		start_word = 0
 		a = 0
 		text = text.replace(/ /g, "")
+		console.log(text)
 		text_1 = new Array()
 		var dict = {}
 		for (var u = 0; u < text.length; u++){
@@ -87,7 +89,14 @@ $("#submit-text").click(function(){
 		text = text.replace(/[^\w\s]/g,"")
 
 		for (var i=0; i<data['tokenization'].length; i++){
+			if (i != data['tokenization'].length-1){
+				if (data['tokenization'][i+1].match(/#/g)){
+				console.log("found")	
+				hash = true
+				}
+			}
 			str = data['tokenization'][i].replace(/#/g,'')
+			console.log(hash)
 			str = str.replace(/ /g, '')
 			end_word = start_word + str.length;
 			
@@ -101,31 +110,29 @@ $("#submit-text").click(function(){
 				}	
 			}
 			start_word = end_word
-			console.log(text_1)
-			var sentence = $(document.createElement('span')).text(text_1.join('')+" ");
+			var sentence = $(document.createElement('span')).text(text_1.join('')+"");
 			while(text_1.length > 0){
 				text_1.pop()
 			}
-			console.log(data['tokenization'][i])
-			console.log(data['prediction'])
 			$(sentence).addClass('sentence');
 			if (data1['long_text_pred']=='REAL'){
 				$(sentence).css('background-color', compute_background_only_green(data['explanation'][0][i]*100))
 				
 			}
 			if (data1['long_text_pred']=='FAKE'){			
-				console.log(data['explanation'][0][i]*100)	
-				console.log(compute_background_only_blue(data['explanation'][0][i]*100))
 				$(sentence).css('background-color', compute_background_only_red(data['explanation'][0][i]*100))
 			}
 			if (data1['long_text_pred']=='SATIRICAL'){
 				$(sentence).css('background-color', compute_background_only_blue(data['explanation'][0][i]*100))
 			}
-			console.log(sentence)
 
 		$("#user-text-editable").append(sentence);	
-		$("#user-text-editable").append($(document.createElement('span')).text(" "))
-		};
+		if (hash==false){
+			console.log("NOT FOUND")
+			$("#user-text-editable").append($(document.createElement('span')).text(" "))
+			}
+		hash = false
+		}
 		$("#explanation-container").show()
 		$("#tweetexp").hide()
 		$("#lgexp").show()
@@ -146,18 +153,27 @@ $("#submit-tweet").click(function(){
 	
 	$("#main-text").replaceWith("<p id = "+"main-text"+"></p>")
 	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
-	
+	if(document.getElementById('ml').checked){
+		radio_choice = 1;
+	} 
+	else if (document.getElementById('sl').checked){
+		radio_choice = 2;
+	}
+	console.log(radio_choice)
 	var text = $("#user-tweet-input").text();
 	console.log(text)
 	input_text = text; //Keeps the text in a global variable
 	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+	hash=false
 	console.log(text)
 	$.getJSON($SCRIPT_ROOT + '/multilingual_tweet', {
-		text: text
+		text: text,
+		scope: radio_choice
 	}, function(data){
 
 		$.getJSON($SCRIPT_ROOT+'/explain_prediction_single_tweet',{
-			text: text
+			text: text,
+			scope: radio_choice
 		},function(data1){
 		//Hides the input textarea and shows the results
 		//$("#tweet-container").hide();
@@ -171,7 +187,6 @@ $("#submit-tweet").click(function(){
 		$("#main-text").append(span_sentence);	
 		var confidence_sentence = $(document.createElement('span')).text((data['confidence'].toString()))
 		$(confidence_sentence).addClass('sentence');
-		console.log(data['confidence'])
 		$("#main-text").append(span_sentence);
 		$("#confidence").append(confidence_sentence)
 		$("#confidence").append($(document.createElement('span')).text("% "))
@@ -185,8 +200,15 @@ $("#submit-tweet").click(function(){
 			if (text[u].match(/[^\w\s]/))
 				dict[u] = text[u]
 			}
-		text = text.replace(/[^\w\s]/g,"")
+		console.log(dict)
+		text = text.replace(/[^\w\s]/g,"") 
 		for (var i=0; i<data1['tokenization'].length; i++){
+			if (i != data1['tokenization'].length-1){
+				if (data1['tokenization'][i+1].match(/#/g)){
+				console.log("found")	
+				hash = true
+				}
+			}
 			str = data1['tokenization'][i].replace(/#/g,'')
 			str = str.replace(/ /, '')
 			end_word = start_word + str.length;
@@ -206,11 +228,8 @@ $("#submit-tweet").click(function(){
 			while(text_1.length > 0){
 				text_1.pop()
 			}
-			console.log(data1['tokenization'][i])
-			console.log(data1['prediction'])
 			$(sentence).addClass('sentence');
 			if (data1['prediction']=='NOT_SATIRE'){
-				console.log(data1['explanation'][0][i])
 				$(sentence).css('background-color', compute_background_only_green(data1['explanation'][0][i]*100))
 				
 			}
@@ -218,12 +237,13 @@ $("#submit-tweet").click(function(){
 				$(sentence).css('background-color', compute_background_only_red(data1['explanation'][0][i]*100))
 			}
 			console.log(sentence)
-			$("#user-tweet-input").append(sentence);	
-			$("#user-tweet-input").append($(document.createElement('span')).text(" "))
-		
+			$("#user-tweet-input").append(sentence);
+			if (hash==false){
+				console.log("NOT FOUND")
+				$("#user-tweet-input").append($(document.createElement('span')).text(" "))
+				}
+			hash = false	
 			}
-		
-
 		$("#explanation-container").show()
 		$("#lgexp").hide()
 		$("#tweetexp").show()
@@ -286,8 +306,23 @@ $("#terrible_one").click(function(){
 	}, function(data){
 
 		//Load example in the input area
-		document.getElementById('user-text-editable').innerHTML += data['example'];
+		document.getElementById('user-text-editable').innerHTML += data.example;
 
+		$('body').css('cursor', 'default');
+
+	});
+
+});
+$("#ironic_statement").click(function(){
+	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+	$('body').css('cursor', 'wait');			
+	$.getJSON($SCRIPT_ROOT + '/get_ironic_examples', {
+	}, function(data){
+
+		//Load example in the input area
+		document.getElementById('user-tweet-input').innerHTML += data['example'];
+		document.getElementById('doc-par').innerHTML+=data['doc']
+		console.log(data['doc'])
 		$('body').css('cursor', 'default');
 
 	});

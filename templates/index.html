@@ -52,11 +52,31 @@
 					
 						<select class="form-select" aria-label="Default select example" id="choice" onChange="choose(this);">
 							<option value="1" selected>Fake/Real/Satire Article Classifier</option>
-							<option value="2">Real/Satire Tweet Classifier</option>
+							<option value="2">Tweet Classifier</option>
 						  </select>
 					</div>				
 				</div>
 			</div>
+			<div class= 'container-fluid' id="multilingual-choice" style="display: none;">
+				<div class='row mb-3 justify-content-center'>
+					<div class = '.col-6 .col-md-4'>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="flexRadioDefault" id="ml">
+							<label class="form-check-label" for="flexRadioDefault1" style="color:white">
+							  Multilingual tweet classifier
+							</label>
+						  </div>
+						  <div class="form-check">
+							<input class="form-check-input" type="radio" name="flexRadioDefault" id="sl" checked>
+							<label class="form-check-label" for="flexRadioDefault2"  style="color:white">
+							  English tweet classifier
+							</label>
+						  </div>
+						  
+					  
+						</div>				
+					</div>
+				</div>
 			<div class ='container fluid' id="form-container">
 				<div class="row">
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
@@ -65,24 +85,21 @@
 					<p>Or load one of our examples:</p>
 					</div>
 				</div>
-					<div class="row mb-3 justify-content-center">
-						<div class="col-4 text-white ">
-							<button class="btn btn-primary btn-lg btn-block" id="real_one" name ="real_one.txt">Real</button>
+					<div class="row mb-3">
+						<div class="col-3 text-white ">
+							<button class="btn btn-primary btn-md btn-block" id="real_one" name ="real_one.txt">                
+								<span style="font-size:30px;">Real</span>
+								</button>
 						</div>
-					</div>
-					<div class ="row mb-3 justify-content-center">
-						<div class="col-4 text-white">
-					<button class = "btn btn-primary btn-lg btn-block"id ="fake_one" name ="fake_one.txt">Fake</button>
+						<div class="col-3 text-white">
+					<button class = "btn btn-primary btn-md btn-block"id ="fake_one" name ="fake_one.txt">
+						<span style="font-size:30px;">Fake</span></button>
 						</div>
-					</div>
-					<div class="row mb-3 justify-content-center">
-						<div class="col-4 text-white">
-							<button class="btn btn-primary btn-lg btn-block" id="satirical_one" name="sarcastic_one.txt">Satirical</button>
+						<div class="col-3 text-white">
+							<button class="btn btn-primary btn-md btn-block" id="satirical_one" name="sarcastic_one.txt"><span style="font-size:30px;">Satirical</span></button>
 						</div>
-					</div>
-					<div class="row mb-3 justify-content-center">
-						<div class="col-4 text-white">
-							<button class="btn btn-primary btn-lg btn-block" id="terrible_one">Terrible one</button>
+						<div class="col-3 text-white">
+							<button class="btn btn-primary btn-md btn-block" id="terrible_one"><span style="font-size:30px;">Misclassified</span></button>
 						</div>
 					</div>
 					<form class="row mb-3 g-3" id="form-text">
@@ -90,7 +107,7 @@
 						
 							<div id="user-text-editable" contenteditable="True"></div>
 						</div>
-					<div class="col-md-4text-white">
+					<div class="col-md-4 text-white">
 						<input class="btn btn-primary btn-lg" type='Button' id='submit-text' value="Submit">
 					</div>
 					<div class="col-md-2">
@@ -104,10 +121,16 @@
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 					<h2>Insert your tweet/short text here</h2>
 					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
-					<p>Languages available are: English,Italian,French,Portoguese,Spanish,German</p>
+					<p id="multilingual-exp">Languages available are: English, Italian, French, Portoguese, Spanish, German</p>
 					</div>
 				</div>
-				<div class ="row justify-content-center">
+				<div class="row">
+					<div class="col text-center text-white">
+						<button class="btn btn-primary btn-md" id="ironic_statement"><span style="font-size:20px;">Ironic example</span></button>
+
+					</div>
+				</div>
+				<div class ="row row mb-3 justify-content-center">
 					<div class="col col-lg-4 text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 						<form id="form-text-short" style = 'text-align: center;'>
 							<div id="user-tweet-input" contenteditable="True"></div>
@@ -123,6 +146,11 @@
 				</div>
 			</div>
 			<!-- Initially invisible, becomes visible after submitting a text -->
+			<div class ="row row mb-3 justify-content-center">
+				<div class="col col-lg-4 text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+					<p id="doc-par"></p>	
+				</div>
+			</div>
 			<div class = "row justify-content-center">
 				<div class="col col-lg-6 text-white order-2" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 					<div class = 'container-fluid' id = "main-container">
@@ -134,6 +162,8 @@
 					</div>
 					</div>
 				</div>
+				</div>
+				<div class = "row justify-content-center">
 				<div class="col col-lg-6 text-white order-1" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 					<div id = "explanation-container">
 						<div class = "container-fluid">

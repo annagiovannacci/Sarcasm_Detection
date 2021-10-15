@@ -1,3 +1,4 @@
+from pickle import TRUE
 import ktrain
 import ast
 import os
@@ -18,7 +19,8 @@ BASE_DIR_WEIGHTS = ''
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//sarcasm',from_tf = True)
-model_2 = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights/long-text-predictor-first-format',from_tf=True)
+model_sl = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//tweet-shot-e-first-format',from_tf = True)
+model_2 = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//long-text-predictor-first-format',from_tf=True)
 
 def preprocess_text(sentence):
     sentence = sentence.replace('\n','' ) #cleaning newline “\n” from the tweets
@@ -28,9 +30,13 @@ def preprocess_text(sentence):
 
 
 #check the explainability of the prediction of a sentence
-def satire_prediction_explainability(sentence):
+def satire_prediction_explainability(sentence,scope):
   input_ids = tf.constant(tokenizer.encode(sentence,return_tensors='pt',add_special_tokens=False))
-  input_embeds, token_ids_tensor_one_hot = E.get_embeddings(input_ids,model)
+  if scope == 1:
+    input_embeds, token_ids_tensor_one_hot = E.get_embeddings(input_ids,model)
+  elif scope == 2:
+    input_embeds, token_ids_tensor_one_hot = E.get_embeddings(input_ids,model_sl)
+
   output = model(inputs_embeds = input_embeds)
   predict = output.pooler_output
   token_importance_norm = E.gradient_x_inputs_attribution(predict,input_embeds).cpu().detach().numpy()
@@ -43,12 +49,16 @@ def satire_prediction_explainability(sentence):
   print(token_words)
 
   return token_importance_norm,token_words
-def satire_prediction(sentence, scope):
+def satire_prediction(sentence, scope,subscope):
   sentence = preprocess_text(sentence)
   if scope == 'long_text':
     predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/long-text-predictor-second-format')
   elif scope == 'satire':
-    predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/Model-for-pred')
+    if subscope == 2:
+      predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/tweet-shot-e-second-format')
+    elif subscope == 1:
+      predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/Model-for-pred')
+      print(subscope)
   y = predictor.predict(sentence)
   probabilities = predictor.predict_proba(sentence)
   return y, probabilities

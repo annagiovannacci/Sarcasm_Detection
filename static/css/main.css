@@ -46,7 +46,6 @@ h1{
 }
 .sentence{
 	margin-bottom: 10px;
-	text-align: justify;
 }
 #explanation-container{
     display: none;
@@ -67,4 +66,7 @@ h1{
     resize: both;
     width: 400px;
     font-size:15px;
+}
+#submit-text{
+    font-size:30px;
 }
