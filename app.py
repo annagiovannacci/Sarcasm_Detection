@@ -99,6 +99,8 @@ def prediction_tweet():
         probability = probabilities[1]
     elif (prediction == 'NOT_SATIRE'):
         probability = probabilities[0]
+    elif (prediction =='FAKE'):
+        probability = probabilities[2]
 
     probability = probability * 100
     result = {'tweet':text,'tweet_pred':prediction,'confidence':int(probability)}
@@ -171,7 +173,7 @@ def get_ex():
 @app.route("/get_worst_predictions")
 def get_wp():
 
-    d = pd.read_csv('/examples/worst_predictions_09.csv')
+    d = pd.read_csv('examples/worst_predictions_09.csv')
     d.dropna(subset=['Text'],inplace=True)
     d.reset_index(inplace=True)    
     text = str(d.sample(n=1)['Text'].iloc[0])
@@ -182,7 +184,7 @@ def get_wp():
 def get_ex_2():
     
     label = request.args.get('label',0,type=str)
-    d = pd.read_csv('/examples/twittiro.csv', delimiter='\t')
+    d = pd.read_csv('/twittiro.csv', delimiter='\t')
     d.dropna(subset=['text'],inplace=True)
     d.reset_index(inplace=True)
     text = str(d.sample(n=1)['text'].iloc[0])

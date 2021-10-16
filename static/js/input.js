@@ -315,6 +315,7 @@ $("#terrible_one").click(function(){
 });
 $("#ironic_statement").click(function(){
 	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+	$("#doc-par").replaceWith("<p id="+"doc-par"+"></p>")
 	$('body').css('cursor', 'wait');			
 	$.getJSON($SCRIPT_ROOT + '/get_ironic_examples', {
 	}, function(data){
