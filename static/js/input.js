@@ -1,4 +1,6 @@
 var radio_choice = 0
+var example = false
+var label_example = ""
 function choose(sel) {
 	$("#main-container").hide()
 	$("#explanation-container").hide()
@@ -43,6 +45,8 @@ $("#submit-text").click(function(){
 
 	$("#main-text").replaceWith("<p id = "+"main-text"+"></p>")
 	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
+	$("#real_value").replaceWith("<p id ="+"real_value>");
+
 
 	//Gets:
 	//	the test given in input by the user
@@ -51,7 +55,7 @@ $("#submit-text").click(function(){
 	var text = $("#user-text-editable").text();
 	console.log(text)
 	input_text = text;	
-	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
+	
 	hash=false
 	
 	$.getJSON($SCRIPT_ROOT + '/prediction_long_text', {
@@ -64,16 +68,21 @@ $("#submit-text").click(function(){
 			$(".loader").hide();
 			$("#form-text-short").show();		
 			$("#main-container").show();
-		
+			$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 		//show the prediction & the confidence
-		var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
-		$(span_sentence).addClass('sentence');
-		$("#main-text").append(span_sentence);	
-		var confidence_sentence = $(document.createElement('span')).text((data1['confidence'].toString()))
-		$(confidence_sentence).addClass('sentence');
+		//var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
+		$("#main-text").append($(document.createElement('span')).text("Prediction: "+data1['long_text_pred']));
+		console.log(example)
+		if (example == true){
+			console.log("Show")
+			$("#real_value").append($(document.createElement('span')).text("Real value:"+label_example));
+				
+
+		}	
+		var confidence_sentence = $(document.createElement('span')).text(("Confidence: "+data1['confidence'].toString()+"%"))
 		$("#confidence").append(confidence_sentence)
-		$("#confidence").append($(document.createElement('span')).text("% "))
-		
+		example = false
+		label_example =""
 		//show the explanation
 		
 		start_word = 0
@@ -144,15 +153,15 @@ $("#submit-text").click(function(){
 $("#submit-tweet").click(function(){
 	$("#submit-tweet").hide();
 	$("#explanation-container").hide();
-	$("#main-container").hide();
+	$("#tweet-text-container").hide();
 	$(".loader").show();
 
 	//Gets:
 	//	the test given in input by the user
 
 	
-	$("#main-text").replaceWith("<p id = "+"main-text"+"></p>")
-	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
+	$("#tweet-text").replaceWith("<p id = "+"tweet-text"+"></p>")
+	$("#tweet-confidence").replaceWith("<p id = "+"tweet-confidence"+"></p>")
 	if(document.getElementById('ml').checked){
 		radio_choice = 1;
 	} 
@@ -163,7 +172,6 @@ $("#submit-tweet").click(function(){
 	var text = $("#user-tweet-input").text();
 	console.log(text)
 	input_text = text; //Keeps the text in a global variable
-	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
 	hash=false
 	console.log(text)
 	$.getJSON($SCRIPT_ROOT + '/multilingual_tweet', {
@@ -179,17 +187,14 @@ $("#submit-tweet").click(function(){
 		//$("#tweet-container").hide();
 		$(".loader").hide();
 		$("#submit-tweet").show();
-		$("#main-container").show();
+		$("#tweet-text-container").show();
+		$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
 
 		//show the prediction
-		var span_sentence = $(document.createElement('span')).text(data['tweet_pred']);
-		$(span_sentence).addClass('sentence');
-		$("#main-text").append(span_sentence);	
-		var confidence_sentence = $(document.createElement('span')).text((data['confidence'].toString()))
-		$(confidence_sentence).addClass('sentence');
-		$("#main-text").append(span_sentence);
-		$("#confidence").append(confidence_sentence)
-		$("#confidence").append($(document.createElement('span')).text("% "))
+		var span_sentence = $(document.createElement('span')).text("Prediction: "+data['tweet_pred']);
+		$("#tweet-text").append(span_sentence);	
+		var confidence_sentence = $(document.createElement('span')).text(("Confidence: "+data['confidence'].toString()+"%"))
+		$("#tweet-confidence").append(confidence_sentence)
 
 		start_word = 0
 		a = 0
@@ -234,7 +239,11 @@ $("#submit-tweet").click(function(){
 				
 			}
 			if (data1['prediction']=='SATIRE'){				
+				$(sentence).css('background-color', compute_background_only_blue(data1['explanation'][0][i]*100))
+			}
+			if (data1['prediction']=='FAKE'){
 				$(sentence).css('background-color', compute_background_only_red(data1['explanation'][0][i]*100))
+
 			}
 			console.log(sentence)
 			$("#user-tweet-input").append(sentence);
@@ -245,8 +254,7 @@ $("#submit-tweet").click(function(){
 			hash = false	
 			}
 		$("#explanation-container").show()
-		$("#lgexp").hide()
-		$("#tweetexp").show()
+		$("#lgexp").show()
 				
 	});
 
@@ -262,7 +270,8 @@ $("#fake_one").click(function(){
 
 		//Load example in the input area
 		document.getElementById('user-text-editable').innerHTML += data['example'];
-
+		example = true
+		label_example = "FAKE"
 		$('body').css('cursor', 'default');
 
 	});
@@ -278,6 +287,8 @@ $("#real_one").click(function(){
 
 		//Load example in the input area
 		document.getElementById('user-text-editable').innerHTML += data['example'];
+		example = true
+		label_example = "REAL"
 
 		$('body').css('cursor', 'default');
 
@@ -293,7 +304,8 @@ $("#satirical_one").click(function(){
 
 		//Load example in the input area
 		document.getElementById('user-text-editable').innerHTML += data['example'];
-
+		example = true
+		label_example = "SATIRICAL"
 		$('body').css('cursor', 'default');
 
 	});
@@ -307,7 +319,8 @@ $("#terrible_one").click(function(){
 
 		//Load example in the input area
 		document.getElementById('user-text-editable').innerHTML += data.example;
-
+		example = true
+		label_example = data['label']
 		$('body').css('cursor', 'default');
 
 	});

@@ -64,9 +64,10 @@ h1{
     overflow: auto; 
     padding: 2px;
     resize: both;
-    width: 400px;
+    width: 500px;
+    height:200px;
     font-size:15px;
 }
 #submit-text{
-    font-size:30px;
+    font-size:20px;
 }

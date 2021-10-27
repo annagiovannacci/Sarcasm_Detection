@@ -11,6 +11,11 @@ import nltk
 import re
 import html
 import spacy
+import icecream as ic
+import time
+import datetime
+
+
 nltk.download('punkt')
 
 app = Flask(__name__, static_url_path='/static')
@@ -119,17 +124,18 @@ def explaination_prediction_single_tweet():
     tweet = tweet.replace('\n','' ) #cleaning newline “\n” from the tweets
     sentence = re.sub(r'(@[A-Za-z_]+)|[^\w\s]|#|http\S+', '', tweet)
     sentence = html.unescape(sentence)
-    token_importance_norm_, token_words_ = AFC.satire_prediction_explainability(sentence,scope)
+    token_importance_norm_, token_words_ =  AFC.satire_prediction_explainability(sentence,scope)
+    print(AFC.debug())
     max_exp = np.max(token_importance_norm_)
     min_exp = np.min(token_importance_norm_)
     s = (token_importance_norm_-min_exp) / (max_exp - min_exp+0.01)
     new_x = s.tolist() 
-    
+   
     print(sentence)
     
     prediction_, probabilities = AFC.satire_prediction(sentence, 'satire',scope)
     result = {'text':tweet,'tokenization':token_words_,'explanation':new_x,'prediction': prediction_}
-    
+    print(AFC.debug())
     return jsonify(result)
 
 @app.route('/explain_prediction')
@@ -153,6 +159,7 @@ def explain_prediction():
     print(text)
     
     prediction_, probabilities = AFC.satire_prediction(text, 'long_text',None)
+    
     result = {'text':long_text,'tokenization':token_words_,'explanation':new_x,'prediction': prediction_}
     
     return jsonify(result)
@@ -160,7 +167,7 @@ def explain_prediction():
 @app.route("/get_example")
 def get_ex():
     label = request.args.get('label',0,type=str)
-    d = pd.read_csv('/examples/satirical_dat.csv')
+    d = pd.read_csv('examples/satirical_dat.csv')
     d.dropna(subset=['text'],inplace=True)
     d.reset_index(inplace=True)
     text = str(d[d['label']==label].sample(n=1)['text'].iloc[0])
@@ -173,18 +180,25 @@ def get_ex():
 @app.route("/get_worst_predictions")
 def get_wp():
 
-    d = pd.read_csv('examples/worst_predictions_09.csv')
+    d = pd.read_csv('examples/worst_predictions_23_.csv')
     d.dropna(subset=['Text'],inplace=True)
-    d.reset_index(inplace=True)    
-    text = str(d.sample(n=1)['Text'].iloc[0])
-
-    return jsonify({'example': text})
+    d.reset_index(inplace=True)
+    sample = d.sample(n=1)    
+    text = str(sample.Text.iloc[0])
+    label = str(sample.Label.iloc[0])
+    if label == "0":
+        label = "REAL"
+    elif label == "1":
+        label = "SATIRICAL"
+    else:
+        label = "FAKE"
+    return jsonify({'example': text,'label':label})
 
 @app.route("/get_ironic_examples")
 def get_ex_2():
     
     label = request.args.get('label',0,type=str)
-    d = pd.read_csv('/twittiro.csv', delimiter='\t')
+    d = pd.read_csv('examples/twittiro.csv', delimiter='\t')
     d.dropna(subset=['text'],inplace=True)
     d.reset_index(inplace=True)
     text = str(d.sample(n=1)['text'].iloc[0])
@@ -228,6 +242,8 @@ def show_bias():
 def show_ideology():
     return render_template('ideology.html')
 
+def time_format():
+    return f'{datetime.now()}|> '
 
 '''
 Runs the application server side'''

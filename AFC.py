@@ -10,6 +10,10 @@ import scraping
 import re
 import html
 import torch
+import time
+from datetime import datetime
+
+
 
 #Change "1" with "0,1" or "0" depending on which GPU you want to use
 #os.environ["CUDA_VISIBLE_DEVICES"]="1"
@@ -21,6 +25,11 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//sarcasm',from_tf = True)
 model_sl = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//tweet-shot-e-first-format',from_tf = True)
 model_2 = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//long-text-predictor-first-format',from_tf=True)
+
+
+predictor_long_text_second_format =  ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/long-text-predictor-second-format')
+predictor_three_way_tweets = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/tweet-shot-e-second-format')
+predictor_tweets_binary = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/Model-for-pred')
 
 def preprocess_text(sentence):
     sentence = sentence.replace('\n','' ) #cleaning newline “\n” from the tweets
@@ -52,12 +61,12 @@ def satire_prediction_explainability(sentence,scope):
 def satire_prediction(sentence, scope,subscope):
   sentence = preprocess_text(sentence)
   if scope == 'long_text':
-    predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/long-text-predictor-second-format')
+    predictor = predictor_long_text_second_format
   elif scope == 'satire':
     if subscope == 2:
-      predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/tweet-shot-e-second-format')
+      predictor = predictor_three_way_tweets
     elif subscope == 1:
-      predictor = ktrain.load_predictor(BASE_DIR_WEIGHTS+'weights/Model-for-pred')
+      predictor = predictor_tweets_binary
       print(subscope)
   y = predictor.predict(sentence)
   probabilities = predictor.predict_proba(sentence)
@@ -74,14 +83,20 @@ def long_text_prediction_explainability(text):
     data = input_embeds.data[:,0:512,:]
     input_embeds = torch.FloatTensor(data)
     input_embeds = input_embeds.clone().requires_grad_(True)
-    print(input_embeds.size())
   output = model_2(inputs_embeds = input_embeds)
   predict = output.pooler_output
   token_importance_norm = E.gradient_x_inputs_attribution(predict,input_embeds).cpu().detach().numpy()
   token_words = tokenizer.convert_ids_to_tokens(token_ids) 
   #token_types = list(input_ids.numpy()[0])
-  print(token_words)  
+  print(token_words)
+    
   return token_importance_norm,token_words
+
+
+def debug():
+  now = datetime.now()
+  print("now =", now)
+
 
 
 
