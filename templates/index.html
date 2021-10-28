@@ -41,18 +41,20 @@
 		<div class="container-fluid" id="welcome-container">
 			<div class="row">
 				<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
-					<h1>Welcome</h1>
-					<h2>Sarcasm Detection tool</h2>
+					<h1>Satire & Fake News Detection Tool</h1>
 				</div>
 			</div>
 		</div>
 		<div class= 'container-fluid' id="first-choice">
 			<div class='row mb-3 justify-content-center'>
+				<div class ="col-2">
+				<p style="color:white">Choose the type of text:</p>
+				</div>
 				<div class = '.col-6 .col-md-4'>
 					
 						<select class="form-select" aria-label="Default select example" id="choice" onChange="choose(this);">
 							<option value="1" selected>Fake/Real/Satire Article Classifier</option>
-							<option value="2">Tweet Classifier</option>
+							<option value="2">Social Media post</option>
 						  </select>
 					</div>				
 				</div>
@@ -63,13 +65,13 @@
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="flexRadioDefault" id="ml">
 							<label class="form-check-label" for="flexRadioDefault1" style="color:white">
-							  Multilingual tweet classifier
+							  Multilingual social media classifier
 							</label>
 						  </div>
 						  <div class="form-check">
 							<input class="form-check-input" type="radio" name="flexRadioDefault" id="sl" checked>
 							<label class="form-check-label" for="flexRadioDefault2"  style="color:white">
-							  English tweet classifier
+							  English social media classifier
 							</label>
 						  </div>
 						  
@@ -81,12 +83,12 @@
 				<div class="row">
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 					<h2>Insert your text here</h2>
-					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
-					<p>Or load one of our examples:</p>
+					<p>Our tool can distinguish real, satirical or fake news articles. Insert your text in the box below
+					   or load one of our examples by clicking on a button:
 					</div>
 				</div>
 					<div class="row mb-3">
-						<div class="col-2">&nbsp</div>
+						<div class="col-1">&nbsp</div>
 						<div class="col-2 text-white">
 							<button class="btn btn-primary btn-sm btn-block" id="real_one" name ="real_one.txt">                
 								<span style="font-size:20px;">Real</span>
@@ -102,10 +104,11 @@
 						<div class="col-2 text-white">
 							<button class="btn btn-primary btn-sm btn-block" id="terrible_one"><span style="font-size:20px;">Misclassified</span></button>
 						</div>
+						<div class="col-4">&nbsp</div>
 					</div>
 					<form class="row mb-3 g-3" id="form-text">
-					<div class="col-2">&nbsp</div>
-					<div class="col-md-6 text-white">
+					<div class="col-1">&nbsp</div>
+					<div class="col-md-8 text-white">
 						
 							<div id="user-text-editable" contenteditable="True"></div>
 						</div>
@@ -130,9 +133,10 @@
 			<div class ='container fluid' id="tweet-container">
 				<div class="row">
 					<div class="col text-center text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
-					<h2>Insert your tweet/short text here</h2>
-					<p>Our tool will help you in detecting sarcastic articles or fake news with respect to real news.</p>
+					<h2>Insert your social media post here</h2>
+					<p>Our tool will help you in detecting satirical,real or  social media posts.</p>
 					<p id="multilingual-exp">Languages available are: English, Italian, French, Spanish, German</p>
+					<p>Insert a text or load one from Twittirò dataset</p>
 					</div>
 				</div>
 				<div class="row">
@@ -171,19 +175,13 @@
 					<p id="doc-par"></p>	
 				</div>
 			</div>
-			<div class = "row justify-content-center">
-				<div class="col col-lg-6 text-white order-2" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
-					
-					</div>
-				</div>
-
 				<div class = "row justify-content-center">
 				<div class="col col-lg-6 text-white order-1" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
 					<div id = "explanation-container">
 						<div class = "container-fluid">
 								<div class = 'col text-center text-white'>
-									<p>Saliency map can be read as follows: darker words are the most important for the prediction</p>
-									<p id="lgexp">Green means that the text was classified as REAL, red means FAKE ,blue means SATIRICAL
+									<p id="lgexp">Saliency map can be read as follows: darker words are the most important for the prediction.
+									Green means that the text was classified as REAL, red means FAKE ,blue means SATIRICAL
 									</p>
 									<div class="text-container text-dark">
 										<p id = "text-pred"></p>

@@ -75,7 +75,7 @@ $("#submit-text").click(function(){
 		console.log(example)
 		if (example == true){
 			console.log("Show")
-			$("#real_value").append($(document.createElement('span')).text("Real value:"+label_example));
+			$("#real_value").append($(document.createElement('span')).text("True label:"+label_example));
 				
 
 		}	
