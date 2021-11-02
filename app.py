@@ -75,15 +75,18 @@ def prediction_long_text():
 
     text = AFC.preprocess_text(text)
     prediction,probabilities = AFC.satire_prediction(text,'long_text',None)
-
+    print(prediction)
     if (prediction == 'FAKE'):
-        probability = probabilities[0]
+        probability = probabilities[2]
 
     if (prediction == 'REAL'):
-        probability = probabilities[1]
+        probability = probabilities[0]
 
     if (prediction == 'SATIRICAL'):
-        probability = probabilities[2]
+        probability = probabilities[1]
+    else:
+        probability = 0.5
+        prediction = "SATIRICAL"
 
     probability = probability*100
     result = {'text_long':text, 'long_text_pred' : prediction, 'confidence': int(probability)}
