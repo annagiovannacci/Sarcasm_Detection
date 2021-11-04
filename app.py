@@ -76,18 +76,7 @@ def prediction_long_text():
     text = AFC.preprocess_text(text)
     prediction,probabilities = AFC.satire_prediction(text,'long_text',None)
     print(prediction)
-    if (prediction == 'FAKE'):
-        probability = probabilities[2]
-
-    if (prediction == 'REAL'):
-        probability = probabilities[0]
-
-    if (prediction == 'SATIRICAL'):
-        probability = probabilities[1]
-    else:
-        probability = 0.5
-        prediction = "SATIRICAL"
-
+    probability = np.max(probabilities)
     probability = probability*100
     result = {'text_long':text, 'long_text_pred' : prediction, 'confidence': int(probability)}
 
@@ -103,12 +92,7 @@ def prediction_tweet():
 
     print(scope)
 
-    if (prediction == 'SATIRE'):
-        probability = probabilities[1]
-    elif (prediction == 'NOT_SATIRE'):
-        probability = probabilities[0]
-    elif (prediction =='FAKE'):
-        probability = probabilities[2]
+    probability = np.max(probabilities)
 
     probability = probability * 100
     result = {'tweet':text,'tweet_pred':prediction,'confidence':int(probability)}
@@ -151,12 +135,15 @@ def explain_prediction():
     
     text = AFC.preprocess_text(long_text)
     token_importance_norm_, token_words_ = AFC.long_text_prediction_explainability(text)
+
+    token_importance_norm_ = log_log(token_importance_norm_,7)
+    
     max_exp = np.max(token_importance_norm_)
     min_exp = np.min(token_importance_norm_)
     
-    print(max_exp)
+    #print(max_exp)
     
-    s = (token_importance_norm_-min_exp) / (max_exp - min_exp+0.01)
+    s = (token_importance_norm_-min_exp) / (max_exp - min_exp + 0.01)
     new_x = s.tolist() 
     
     print(text)
@@ -247,6 +234,15 @@ def show_ideology():
 
 def time_format():
     return f'{datetime.now()}|> '
+
+def log_plus(x):
+    return np.log(x + 1)
+
+def log_log(x,t=3):
+    y = x
+    for i in range(t):
+        y = log_plus(y)
+    return y
 
 '''
 Runs the application server side'''
