@@ -86,7 +86,18 @@ $("#submit-text").click(function(){
 		console.log(example)
 		if (example == true){
 			console.log("Show")
-			$("#real_value").append($(document.createElement('span')).text("True label:"+label_example));
+			$("#real_value").append($(document.createElement('span')).text("True label: ").append("<span id="+"real"+">"+label_example+"</span>"));
+			if (label_example == "FAKE"){
+				console.log("here")
+				$("#real").css('background-color',compute_background_only_red(100))
+			}
+			if (label_example =='TRUE'){
+				$("#real").css('background-color',compute_background_only_green(100))
+			}
+			if (label_example =='SATIRICAL'){
+				$("#real").css('background-color',compute_background_only_blue(100))
+			}
+
 		}	
 		var confidence_sentence = $(document.createElement('span')).text(("Confidence: "+data1['confidence'].toString()+"%"))
 		$("#confidence").append(confidence_sentence)
