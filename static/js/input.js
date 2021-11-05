@@ -71,6 +71,7 @@ $("#submit-text").click(function(){
 			$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 		//show the prediction & the confidence
 		//var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
+		text = data1["text_long"]
 		$("#main-text").append($(document.createElement('span')).text("Prediction: ").append("<span id="+"prediction"+">"+data1['long_text_pred']+"</span>"));
 		if (data1['long_text_pred']=='REAL'){
 			$("#prediction").css('background-color', compute_background_only_green(data1['confidence']))
@@ -105,8 +106,8 @@ $("#submit-text").click(function(){
 			}
 		text = text.replace(/[^\w\s]/g,"")
 
-		for (var i=1; i<data['tokenization'].length; i++){
-			if (i != data['tokenization'].length-1){
+		for (var i=0; i<data['tokenization'].length; i++){
+			if (i != data['tokenization'].length){
 				if (data['tokenization'][i+1].match(/#/g)){
 				console.log("found")	
 				hash = true
@@ -133,14 +134,14 @@ $("#submit-text").click(function(){
 			}
 			$(sentence).addClass('sentence');
 			if (data1['long_text_pred']=='REAL'){
-				$(sentence).css('background-color', compute_background_only_green(data['explanation'][0][i+1]*100))
+				$(sentence).css('background-color', compute_background_only_green(data['explanation'][0][i]*100))
 				
 			}
 			if (data1['long_text_pred']=='FAKE'){			
-				$(sentence).css('background-color', compute_background_only_red(data['explanation'][0][i+1]*100))
+				$(sentence).css('background-color', compute_background_only_red(data['explanation'][0][i]*100))
 			}
 			if (data1['long_text_pred']=='SATIRICAL'){
-				$(sentence).css('background-color', compute_background_only_blue(data['explanation'][0][i+1]*100))
+				$(sentence).css('background-color', compute_background_only_blue(data['explanation'][0][i]*100))
 			}
 
 		$("#user-text-editable").append(sentence);	
@@ -215,8 +216,8 @@ $("#submit-tweet").click(function(){
 			}
 		console.log(dict)
 		text = text.replace(/[^\w\s]/g,"") 
-		for (var i=1; i<data1['tokenization'].length; i++){
-			if (i != data1['tokenization'].length-1){
+		for (var i=0; i<data1['tokenization'].length; i++){
+			if (i != data1['tokenization'].length){
 				if (data1['tokenization'][i+1].match(/#/g)){
 				console.log("found")	
 				hash = true
@@ -244,14 +245,14 @@ $("#submit-tweet").click(function(){
 			}
 			$(sentence).addClass('sentence');
 			if (data1['prediction']=='NOT_SATIRE'){
-				$(sentence).css('background-color', compute_background_only_green(data1['explanation'][0][i+1]*100))
+				$(sentence).css('background-color', compute_background_only_green(data1['explanation'][0][i]*100))
 				
 			}
 			if (data1['prediction']=='SATIRE'){				
-				$(sentence).css('background-color', compute_background_only_blue(data1['explanation'][0][i+1]*100))
+				$(sentence).css('background-color', compute_background_only_blue(data1['explanation'][0][i]*100))
 			}
 			if (data1['prediction']=='FAKE'){
-				$(sentence).css('background-color', compute_background_only_red(data1['explanation'][0][i+1]*100))
+				$(sentence).css('background-color', compute_background_only_red(data1['explanation'][0][i]*100))
 
 			}
 			console.log(sentence)
