@@ -1,22 +1,19 @@
-from flask import Flask, render_template, request, json, jsonify
-import concurrent.futures
-import csv
-#from flask_ngrok import run_with_ngrok
-import explainability as E
-import AFC
+import AFC, scraping
 import numpy as np
 import pandas as pd
-import scraping
-import nltk
-import re
-import html
-import spacy
-import icecream as ic
-import time
-import datetime
+import re, html, datetime
+from nltk import download
+from spacy import load
+from flask import Flask, render_template, request, json, jsonify
 
+# import concurrent.futures
+# import csv
+# from flask_ngrok import run_with_ngrok
+# import explainability as E
+# import icecream as ic
+# import time
 
-nltk.download('punkt')
+download('punkt')
 
 app = Flask(__name__, static_url_path='/static')
 #run_with_ngrok(app)
@@ -35,7 +32,7 @@ def explain_prediction_single():
 
     #Retrieve arguments sent by the client
     #predictor_name = request.args.get('predictor_name', 0, type=str)
-    text           = request.args.get('text', 0, type=str)
+    text = request.args.get('text', 0, type=str)
     #divide the text in sentences
     sentences = scraping.split_into_sentences(text)
     token_importance_norm = []
@@ -50,7 +47,7 @@ def explain_prediction_single():
         token_importance_norm_1, token_words_1 = AFC.satire_prediction_explainability(sentence)
         max_exp = np.max(token_importance_norm_1)
         min_exp = np.min(token_importance_norm_1)
-        s = (token_importance_norm_1-min_exp) / (max_exp - min_exp+0.01)
+        s = (token_importance_norm_1-min_exp) / (max_exp - min_exp + 0.01)
         new_x = s.tolist() 
         token_importance_norm.append(token_importance_norm_1)
         token_words.append(token_words_1)
@@ -136,19 +133,20 @@ def explain_prediction():
     text = AFC.preprocess_text(long_text)
     token_importance_norm_, token_words_ = AFC.long_text_prediction_explainability(text)
 
-    token_importance_norm_ = log_log(token_importance_norm_,7)
+    # token_importance_norm_ = log_log(token_importance_norm_,7)
     
     max_exp = np.max(token_importance_norm_)
     min_exp = np.min(token_importance_norm_)
     
     #print(max_exp)
     
-    s = (token_importance_norm_-min_exp) / (max_exp - min_exp + 0.01)
+    s = (token_importance_norm_ - min_exp) / (max_exp - min_exp+0.01)
     new_x = s.tolist() 
-    
+    # with open("./explainability.txt") as f:
+    #     f.write(s)
     print(text)
     
-    prediction_, probabilities = AFC.satire_prediction(text, 'long_text',None)
+    prediction_, probabilities = AFC.satire_prediction(text, 'long_text', None)
     
     result = {'text':long_text,'tokenization':token_words_,'explanation':new_x,'prediction': prediction_}
     
@@ -196,7 +194,7 @@ def get_ex_2():
     if (len(text)>=4094):
         text = text[:4094]
     
-    nlp = spacy.load("it_core_news_sm")
+    nlp = load("it_core_news_sm")
     doc = nlp(AFC.preprocess_text(text))
     s = ''
     
@@ -248,6 +246,5 @@ def log_log(x,t=3):
 Runs the application server side'''
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
-
-#app.run()
+    # app.run(host='0.0.0.0')
+    pass
