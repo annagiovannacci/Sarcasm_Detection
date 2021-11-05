@@ -1,6 +1,7 @@
 import numpy as np
 import torch
-import tensorflow as tf
+from tensorflow import one_hot
+print("import expl")
 
 def get_embeddings(input_ids,model):
   
@@ -23,7 +24,7 @@ def to(self, tensor: torch.Tensor):
   return tensor
 
 def _one_hot(token_ids, vocab_size):
-    return tf.one_hot(token_ids, vocab_size).numpy()
+    return one_hot(token_ids, vocab_size).numpy()
 
 def gradient_x_inputs_attribution(prediction_logit, inputs_embeds, retain_graph=True):
 
@@ -40,12 +41,19 @@ def gradient_x_inputs_attribution(prediction_logit, inputs_embeds, retain_graph=
     # Turn into a scalar value for each input token by taking L2 norm
     feature_importance = torch.norm(grad_x_input, dim=2)
     print(feature_importance)
+    try:
+      print("miao")
+      print(feature_importance[:,1:-1],feature_importance.shape,feature_importance[:,1:-1].shape)
+    except:
+      print("eh no eh")
     # Normalize so we can show scores as percentages
+    feature_importance = feature_importance[:,1:-1]
     token_importance_normalized = feature_importance / torch.sum(feature_importance)
 
     # Zero the gradient for the tensor so next backward() calls don't have
     # gradients accumulating
     inputs_embeds.grad.data.zero_()
+
     return token_importance_normalized
   
 def saliency(prediction_logit, token_ids_tensor_one_hot, norm=True, retain_graph=True):
