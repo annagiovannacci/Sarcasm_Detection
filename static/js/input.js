@@ -91,7 +91,7 @@ $("#submit-text").click(function(){
 				console.log("here")
 				$("#real").css('background-color',compute_background_only_red(100))
 			}
-			if (label_example =='TRUE'){
+			if (label_example =='REAL'){
 				$("#real").css('background-color',compute_background_only_green(100))
 			}
 			if (label_example =='SATIRICAL'){
