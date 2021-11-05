@@ -56,7 +56,9 @@ def satire_prediction_explainability(sentence,scope):
   
   token_ids = list(input_ids.numpy()[0])
 
-  token_words = tokenizer.convert_ids_to_tokens(token_ids) 
+  #token_words = tokenizer.convert_ids_to_tokens(token_ids) 
+  token_words = tokenizer.convert_ids_to_tokens(token_ids)[1:-1]
+
   print(input_ids)
   print("---")
   print(token_words)

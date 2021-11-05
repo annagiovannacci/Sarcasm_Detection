@@ -71,7 +71,7 @@ $("#submit-text").click(function(){
 			$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 		//show the prediction & the confidence
 		//var span_sentence = $(document.createElement('span')).text(data1['long_text_pred']);
-		text = data1["text_long"]
+		text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 		$("#main-text").append($(document.createElement('span')).text("Prediction: ").append("<span id="+"prediction"+">"+data1['long_text_pred']+"</span>"));
 		if (data1['long_text_pred']=='REAL'){
 			$("#prediction").css('background-color', compute_background_only_green(data1['confidence']))
@@ -107,7 +107,7 @@ $("#submit-text").click(function(){
 		text = text.replace(/[^\w\s]/g,"")
 
 		for (var i=0; i<data['tokenization'].length; i++){
-			if (i != data['tokenization'].length){
+			if (i != data['tokenization'].length-1){
 				if (data['tokenization'][i+1].match(/#/g)){
 				console.log("found")	
 				hash = true
@@ -180,6 +180,7 @@ $("#submit-tweet").click(function(){
 	console.log(radio_choice)
 	var text = $("#user-tweet-input").text();
 	console.log(text)
+	text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 	input_text = text; //Keeps the text in a global variable
 	hash=false
 	console.log(text)
@@ -192,8 +193,6 @@ $("#submit-tweet").click(function(){
 			text: text,
 			scope: radio_choice
 		},function(data1){
-		//Hides the input textarea and shows the results
-		//$("#tweet-container").hide();
 		$(".loader").hide();
 		$("#submit-tweet").show();
 		$("#tweet-text-container").show();
@@ -217,7 +216,7 @@ $("#submit-tweet").click(function(){
 		console.log(dict)
 		text = text.replace(/[^\w\s]/g,"") 
 		for (var i=0; i<data1['tokenization'].length; i++){
-			if (i != data1['tokenization'].length){
+			if (i != data1['tokenization'].length-1){
 				if (data1['tokenization'][i+1].match(/#/g)){
 				console.log("found")	
 				hash = true

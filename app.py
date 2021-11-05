@@ -71,10 +71,10 @@ def prediction_long_text():
     print(text)
 
     text = AFC.preprocess_text(text)
-    prediction,probabilities = AFC.satire_prediction(text,'long_text',None)
-    print(prediction)
+    prediction, probabilities = AFC.satire_prediction(text,'long_text',None)
+    print(prediction, type(prediction),probabilities[:])
     probability = np.max(probabilities)
-    probability = probability*100
+    probability = probability * 100
     result = {'text_long':text, 'long_text_pred' : prediction, 'confidence': int(probability)}
 
     return jsonify(result)
@@ -88,7 +88,7 @@ def prediction_tweet():
     prediction, probabilities = AFC.satire_prediction(text,'satire',scope)
 
     print(scope)
-
+    print(probabilities)
     probability = np.max(probabilities)
 
     probability = probability * 100
