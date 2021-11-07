@@ -160,7 +160,7 @@ def get_ex():
     d.reset_index(inplace=True)
     text = str(d[d['label']==label].sample(n=1)['text'].iloc[0])
     
-    if (len(text)>=4094):
+    if (len(text)>=4000):
         text = text[:4094]
     
     return jsonify({'example': text})
@@ -205,30 +205,14 @@ def get_ex_2():
 
     return jsonify({'example': text,'doc':s})
 
-"""
-
-Returns a text that can be used as example by the user
-The text can be one of the examples prepared by us or a transcript from a random Trump speech (thanks to rev.com)
-
-Returns "About us" page
-
-"""
-@app.route('/about.html')
-def show_about():
-    return render_template('about.html')
-
-"""
-
-Return explanations for the various models
-
-"""
-@app.route('/bias.html')
-def show_bias():
-    return render_template('bias.html')
-
-@app.route('/ideology.html')
-def show_ideology():
-    return render_template('ideology.html')
+@app.route("/get_example_ansa")
+def get_ex_ansa():
+    d = pd.read_csv('examples/tweet_ansa.csv')
+    d.dropna(subset=['Text'],inplace=True)
+    d.reset_index(inplace=True)
+    text = str(d.sample(n=1)['Text'].iloc[0])
+    
+    return jsonify({'example': text})
 
 def time_format():
     return f'{datetime.now()}|> '

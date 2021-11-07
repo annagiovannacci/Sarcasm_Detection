@@ -394,3 +394,18 @@ $("#ironic_statement").click(function(){
 	});
 
 });
+$("#tweet_ansa").click(function(){
+	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+	$("#doc-par").replaceWith("<p id="+"doc-par"+"></p>")
+	$('body').css('cursor', 'wait');			
+	$.getJSON($SCRIPT_ROOT + '/get_example_ansa', {
+	}, function(data){
+		example = true
+		label_example = "NOT_SATIRE"
+		//Load example in the input area
+		document.getElementById('user-tweet-input').innerHTML += data['example'];
+		$('body').css('cursor', 'default');
+
+	});
+
+});
