@@ -139,3 +139,12 @@ cython_debug/
 
 *.PNG
 first_attempt/
+AFC.py
+ind.txt
+examples/satirical_dat.csv
+manual_lab_tdm.txt
+manual_labeling.py
+figure_ret_kotiomkin.csv
+figure_ret_twittiro.csv
+houston.txt
+ironic.ipynb

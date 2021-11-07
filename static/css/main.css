@@ -20,7 +20,7 @@ h1{
     margin-bottom: 0;
 }
 
-#main-container{
+#main-container,#tweet-text-container{
 	margin-top: 1em;
 	display: none;
 }
@@ -68,6 +68,6 @@ h1{
     height:300px;
     font-size:15px;
 }
-#submit-text{
+#submit-text,#submit-tweet{
     font-size:20px;
 }

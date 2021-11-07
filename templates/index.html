@@ -24,18 +24,14 @@
 						<img src="static/Xai_logo.png" height="45px">
 					</a>
 					<a href="/sarcastic-news">
-						Sarcasm Detection tool
+						Satire Detection tool
 					</a>
 				</div>
-	
 	
 				<div class="navbar-brand" >
 					<img src="static/Logo_polimi.png" height="35px">
 				</div>
-	
 			</div>
-	
-	
 		</nav>
 	
 		<div class="container-fluid" id="welcome-container">
@@ -45,19 +41,18 @@
 				</div>
 			</div>
 		</div>
-		<div class= 'container-fluid' id="first-choice">
-			<div class='row mb-3 justify-content-center'>
-				<div class ="col-2">
-				<p style="color:white">Choose the type of text:</p>
-				</div>
-				<div class = '.col-6 .col-md-4'>
-					
+		<div class= 'container-fluid text-white' id="first-choice">
+			<div class='row mb-3 d-flex justify-content-center'>
+			<div class="col-2">&nbsp</div>
+			<div class = 'col-md-4 text-center'>
+					<label for = "choice">Choose the type of text: </label>
 						<select class="form-select" aria-label="Default select example" id="choice" onChange="choose(this);">
 							<option value="1" selected>News Article Classifier</option> 
 							<option value="2">Social Media post</option>
 						  </select>
-					</div>				
-				</div>
+					</div>
+			<div class="col-2">&nbsp</div>				
+			</div>
 			</div>
 			<div class= 'container-fluid' id="multilingual-choice" style="display: none;">
 				<div class='row mb-3 justify-content-center'>
@@ -141,28 +136,30 @@
 				</div>
 				<div class="row">
 					<div class="col text-center text-white">
-						<button class="btn btn-primary btn-md" id="ironic_statement"><span style="font-size:20px;">Ironic example</span></button>
-
+						<button class="btn btn-primary btn-md" id="ironic_statement">
+							<span style="font-size:20px;">Ironic example</span>
+						</button>
 					</div>
 				</div>
-				<div class ="row row mb-3 justify-content-center">
-					<div class="col col-lg-4 text-white" style="max-width: 60%; margin:auto; margin-bottom: 1%; margin-top: 1%">
+				<div class="row">&nbsp</div>
+				<div class ="row mb-3 g-3 justify-content-center">
+					<div class="col-md-8">
 						<form id="form-text-short" style = 'text-align: center;'>
 							<div id="user-tweet-input" contenteditable="True"></div>
 					</div>
-					<div class="col col-md-4 text-white">
+					<div class="col-md-2 text-white">
 					<div class ="row">
-							<input class="btn btn-primary"type='Button' id='submit-tweet' value="Submit">
+							<input class="btn btn-primary btn-sm"type='Button' id='submit-tweet' value="Submit">
 						</div>
-					<div class="row">
+						<div class ="row">
 						<div class = 'container-fluid' id = "tweet-text-container">
+							<p id ="true-tweet"></p>
 							<p id= "tweet-text"></p>
-								<p id="tweet-confidence"></p>
+							<p id="tweet-confidence"></p>
 							</div>
+						</div>
 					</div>
-					</div>
-					</div>
-					<div class="col col-md-4">
+					<div class="col col-md-1">
 					<div class='loader'></div>
 					</div>
 						</form>

@@ -18,9 +18,9 @@ print("import AFC")
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 MODEL_NAME = 'bert-base-multilingual-uncased'
-BASE_DIR_WEIGHTS = ''
+#BASE_DIR_WEIGHTS = ''
 # BASE_DIR_WEIGHTS = '/mnt/g/.shortcut-targets-by-id/1SowylFaTfsAuRHKJRN7yE6AaIKIojvuz/ThesisMaterial/APP/'
-# BASE_DIR_WEIGHTS = '//mnt//c//users//annag//desktop//sarcasmdetection//'
+BASE_DIR_WEIGHTS = '//mnt//c//users//annag//desktop//sarcasmdetection//'
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModel.from_pretrained(BASE_DIR_WEIGHTS+'weights//sarcasm',from_tf = True)

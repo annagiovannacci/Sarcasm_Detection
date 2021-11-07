@@ -186,7 +186,7 @@ def get_wp():
 def get_ex_2():
     
     label = request.args.get('label',0,type=str)
-    d = pd.read_csv('examples/twittiro.csv', delimiter='\t')
+    d = pd.read_csv('//mnt//c//Users//annag//Desktop//all-rnr-annotated-threads//twittiro.csv', delimiter='\t')
     d.dropna(subset=['text'],inplace=True)
     d.reset_index(inplace=True)
     text = str(d.sample(n=1)['text'].iloc[0])

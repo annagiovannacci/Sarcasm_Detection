@@ -8,18 +8,21 @@ function choose(sel) {
 	$("#confidence").replaceWith("<p id = "+"confidence"+"></p>")
 	$("#user-text-editable").replaceWith("<div id="+"user-text-editable"+" contenteditable="+"True"+"></div>")
 	$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
-	$("#doc-container").hide()
+	$("#doc-par").replaceWith("<p id="+"doc-par"+"></p>")
+	$("#tweet-text").replaceWith("<p id = "+"tweet-text"+"></p>")
+	$("#tweet-confidence").replaceWith("<p id = "+"tweet-confidence"+"></p>")
+
 
 
 	if (sel.options[sel.selectedIndex].value ==1){
-		$("#welcome-container").hide();
 		$("#tweet-container").hide();
 		$("#form-text-short").hide();
 		$("#form-container").show();
+		$("#multilingual-choice").hide();
+
 
 	}
 	else if (sel.options[sel.selectedIndex].value==2){
-		$("#welcome-container").hide();
 		$("#multilingual-choice").show();
 		$("#form-container").hide();
 		$("#tweet-container").show();
@@ -182,6 +185,7 @@ $("#submit-tweet").click(function(){
 	
 	$("#tweet-text").replaceWith("<p id = "+"tweet-text"+"></p>")
 	$("#tweet-confidence").replaceWith("<p id = "+"tweet-confidence"+"></p>")
+	$("#true-tweet").replaceWith("<p id="+"true-tweet"+"></p>")
 	if(document.getElementById('ml').checked){
 		radio_choice = 1;
 	} 
@@ -191,7 +195,6 @@ $("#submit-tweet").click(function(){
 	console.log(radio_choice)
 	var text = $("#user-tweet-input").text();
 	console.log(text)
-	text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 	input_text = text; //Keeps the text in a global variable
 	hash=false
 	console.log(text)
@@ -208,13 +211,40 @@ $("#submit-tweet").click(function(){
 		$("#submit-tweet").show();
 		$("#tweet-text-container").show();
 		$("#user-tweet-input").replaceWith("<div id="+"user-tweet-input"+" contenteditable="+"True"+"></div>")
+		text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
 		//show the prediction
-		var span_sentence = $(document.createElement('span')).text("Prediction: "+data['tweet_pred']);
+		var span_sentence = $(document.createElement('span')).text("Prediction: ").append("<span id="+"tp"+">"+data['tweet_pred']+"</span>");
 		$("#tweet-text").append(span_sentence);	
+		if (data['tweet_pred']=="SATIRE"){
+			$("#tp").css('background-color',compute_background_only_blue(data['confidence']))
+		}
+		else if (data['tweet_pred']=="NOT_SATIRE"){
+			$("#tp").css('background-color',compute_background_only_green(data['confidence']))
+		}
+		else if (data['tweet_pred']=="FAKE"){
+			$("#tp").css('background-color',compute_background_only_red(data['confidence']))
+		}
 		var confidence_sentence = $(document.createElement('span')).text(("Confidence: "+data['confidence'].toString()+"%"))
 		$("#tweet-confidence").append(confidence_sentence)
+		if (example == true){
+			$("#true-tweet").append($(document.createElement('span')).text("True label: ").append("<span id="+"realt"+">"+label_example+"</span>"));
+			if (label_example == "FAKE"){
+				console.log("here")
+				$("#realt").css('background-color',compute_background_only_red(100))
+			}
+			if (label_example =='NOT_SATIRE'){
+				$("#realt").css('background-color',compute_background_only_green(100))
+			}
+			if (label_example =='SATIRE'){
+				$("#realt").css('background-color',compute_background_only_blue(100))
+			}
 
+		}else if (example==false){
+			$("#doc-par").replaceWith("<p id="+"doc-par"+"></p>")
+		}
+		example = false	
+		label_example = ""
 		start_word = 0
 		a = 0
 		text = text.replace(/ /g, "")
@@ -353,7 +383,8 @@ $("#ironic_statement").click(function(){
 	$('body').css('cursor', 'wait');			
 	$.getJSON($SCRIPT_ROOT + '/get_ironic_examples', {
 	}, function(data){
-
+		example = true
+		label_example = "SATIRE"
 		//Load example in the input area
 		document.getElementById('user-tweet-input').innerHTML += data['example'];
 		document.getElementById('doc-par').innerHTML+=data['doc']
